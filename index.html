@@ -228,6 +228,20 @@
       object-fit: cover; object-position: 80% center; opacity: 0.6;
       filter: hue-rotate(70deg) saturate(0.85) brightness(0.9); z-index: 0;
     }
+    
+    /* Плавный переход снизу */
+    .hero-desktop::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 300px;
+      background: linear-gradient(to bottom, transparent 0%, var(--bg) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
     .hero-desktop::after {
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(90deg, rgba(10, 24, 16, 0.95) 0%, rgba(10, 24, 16, 0.7) 40%, transparent 80%);
@@ -295,9 +309,55 @@
     .schedule-link .lbl { color: var(--muted); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.2); text-underline-offset: 4px; transition: text-decoration-color 0.2s; }
     .schedule-link:hover .lbl { text-decoration-color: var(--green-light); }
 
-    /* ---------- SECTIONS ---------- */
-    section.block { padding: 50px 60px; max-width: 1400px; margin: 0 auto; }
-    .section-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 44px; flex-wrap: wrap; gap: 20px; }
+    /* ---------- SECTIONS & AURORA EFFECT ---------- */
+    section.block { 
+      padding: 50px 60px; 
+      max-width: 1400px; 
+      margin: 0 auto; 
+      position: relative; 
+      z-index: 1;
+    }
+    
+    /* Светящееся пятно слева */
+    section.block::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 0;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(62, 165, 106, 0.12) 0%, transparent 60%);
+      filter: blur(60px);
+      z-index: -1;
+      pointer-events: none;
+      animation: floatBlob 10s infinite alternate ease-in-out;
+    }
+
+    /* Светящееся пятно справа */
+    section.block::after {
+      content: '';
+      position: absolute;
+      bottom: 10%;
+      right: 0;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(212, 162, 74, 0.08) 0%, transparent 60%);
+      filter: blur(60px);
+      z-index: -1;
+      pointer-events: none;
+      animation: floatBlob2 12s infinite alternate-reverse ease-in-out;
+    }
+
+    @keyframes floatBlob {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, 40px) scale(1.2); }
+    }
+    @keyframes floatBlob2 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-40px, -50px) scale(1.1); }
+    }
+
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 44px; flex-wrap: wrap; gap: 20px; position: relative; z-index: 2; }
     .section-title { font-family: 'Cormorant Garamond', sans-serif; font-size: clamp(34px, 4.5vw, 52px); font-weight: 500; letter-spacing: -0.025em; line-height: 1.05; }
     .section-title .muted { background: linear-gradient(135deg, #f9e79f, #4ab97a); -webkit-text-fill-color: transparent; background-clip: text; color: var(--muted); font-weight: 400; font-style: italic; }
     .section-desc { font-family: 'Lora', sans-serif; color: var(--muted); font-size: 13px; max-width: 420px; line-height: 1.5; }
@@ -308,6 +368,8 @@
       gap: 32px;
       flex-wrap: wrap;
       justify-content: flex-start;
+      position: relative;
+      z-index: 2;
     }
 
     .story-item {
@@ -582,7 +644,7 @@
     .story-book-btn:active { transform: scale(0.97); }
 
     /* ---------- MENU GRID ---------- */
-    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; position: relative; z-index: 2; }
     .dish-card {
       background: var(--card); border-radius: var(--radius-card); padding: 18px;
       display: flex; flex-direction: column; gap: 12px;
@@ -630,7 +692,7 @@
     .dish-tag.veg { color: #a0d97a; border-color: rgba(160, 217, 122, 0.3); }
 
     /* ---------- DELIVERY ---------- */
-    .delivery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .delivery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; position: relative; z-index: 2; }
     .delivery-card {
       background: var(--card); border-radius: var(--radius-card); padding: 28px 24px;
       display: flex; flex-direction: column; gap: 12px; position: relative;
@@ -653,7 +715,7 @@
     .step p { font-size: 14px; color: var(--muted); line-height: 1.5; }
 
     /* ---------- FOOTER ---------- */
-    footer { padding: 60px 60px 40px; border-top: 1px solid rgba(62, 165, 106, 0.1); max-width: 1400px; margin: 0 auto; }
+    footer { padding: 60px 60px 40px; border-top: 1px solid rgba(62, 165, 106, 0.1); max-width: 1400px; margin: 0 auto; position: relative; z-index: 2; }
     .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
     .footer-col h4 { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text); margin-bottom: 18px; font-weight: 500; }
     .footer-col a { display: block; color: var(--muted); text-decoration: none; font-family: 'Cormorant Garamond', sans-serif; font-size: 15px; margin-bottom: 12px; opacity: 0.8; transition: opacity 0.2s, color 0.2s; }
@@ -1178,7 +1240,7 @@
             <div class="num">30<span class="cur"> мин</span></div>
             <div class="lbl">средняя доставка</div>
           </div>
-          <a href="https://yandex.ru/maps/10745/orehovo-zuevo/?ll=38.978737%2C55.804603&mode=poi&poi%5Bpoint%5D=38.977873%2C55.804502&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D6568639182%26yclid%3D14473779553247428607&tab=reviews&z=18.8" target="_blank" rel="noopener noreferrer" class="hero-stat rating-link" aria-label="Отзывы на Яндекс Картах">
+          <a href="https://yandex.ru/maps/org/el_krysha/" target="_blank" rel="noopener noreferrer" class="hero-stat rating-link" aria-label="Отзывы на Яндекс Картах">
             <div class="num">4.9<span class="cur"> ★</span></div>
             <div class="lbl">рейтинг гостей</div>
           </a>
