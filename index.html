@@ -1948,10 +1948,7 @@
       document.getElementById('customTimeDropdown').classList.remove('open');
     };
 
-        // ============ ВХОД / ТЕЛЕФОН / КОД ============
-        // ============ ВХОД / ТЕЛЕФОН / КОД ============
-    
-    // Добавляем недостающие функции для окна Входа
+    // ============ ВХОД / ТЕЛЕФОН / КОД ============
     window.openLogin = function() {
       document.getElementById('loginOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -1977,7 +1974,7 @@
     
     window.closePhone = function() {
       document.getElementById('phoneOverlay').classList.remove('open');
-      if (!document.querySelector('.login-overlay.open, .legal-overlay.open, .code-overlay.open')) {
+      if (!document.querySelector('.login-overlay.open, .legal-overlay.open, #codeOverlay.open')) {
         document.body.style.overflow = '';
       }
     };
@@ -2016,7 +2013,6 @@
             closePhone();
             document.getElementById('codeOverlay').classList.add('open');
             showToast('Код отправлен в Telegram', '📱');
-            // Автофокус на поле ввода кода
             setTimeout(() => document.getElementById('codeInput').focus(), 300);
           } else {
             showToast('❌ ' + (data.error || 'Ошибка отправки'), '⚠️');
@@ -2026,7 +2022,7 @@
           showToast('❌ Сервер недоступен', '⚠️');
         } finally {
           btn.textContent = originalText;
-          validatePhone(); // Вернет кнопку в исходное состояние
+          validatePhone(); 
         }
       }
     };
@@ -2057,7 +2053,6 @@
         if (res.ok && data.valid) {
           showToast('✓ Вы успешно вошли!', '🎉');
           closeCode();
-          // Здесь можно обновить UI на "профиль" вместо кнопки "Войти"
           document.querySelectorAll('.nav-actions button:last-child').forEach(btn => btn.textContent = 'Профиль');
         } else {
           showToast('❌ Неверный код', '⚠️');
@@ -2106,20 +2101,44 @@
       btn.disabled = val.length !== 10;
     }
 
-    // Валидация кода (только цифры)
-    document.addEventListener('DOMContentLoaded', () => {
-      const codeInput = document.getElementById('codeInput');
-      if (codeInput) {
-        codeInput.addEventListener('input', (e) => {
-          let val = e.target.value.replace(/\D/g, '');
-          if (val.length > 6) val = val.slice(0, 6);
-          e.target.value = val;
-          
-          const btn = document.getElementById('codeSubmit');
-          if (btn) btn.disabled = val.length !== 6;
-        });
-      }
-    });
+    // ============ ИНИЦИАЛИЗАЦИЯ ИНПУТОВ (БЕЗ DOMContentLoaded) ============
+    // Телефон
+    const phoneInput = document.getElementById('phoneInput');
+    if (phoneInput) {
+      phoneInput.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '');
+        if (val.length > 10) val = val.slice(0, 10);
+        
+        let formatted = '';
+        if (val.length > 0) formatted = '(' + val.slice(0, 3);
+        if (val.length >= 4) formatted += ') ' + val.slice(3, 6);
+        if (val.length >= 7) formatted += '-' + val.slice(6, 8);
+        if (val.length >= 9) formatted += '-' + val.slice(8, 10);
+        
+        e.target.value = formatted;
+        validatePhone();
+      });
+      
+      phoneInput.addEventListener('keypress', (e) => {
+        if (!/[0-9]/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)) {
+          e.preventDefault();
+        }
+      });
+    }
+
+    // Код
+    const codeInput = document.getElementById('codeInput');
+    if (codeInput) {
+      codeInput.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '');
+        if (val.length > 6) val = val.slice(0, 6);
+        e.target.value = val;
+        
+        const btn = document.getElementById('codeSubmit');
+        if (btn) btn.disabled = val.length !== 6;
+      });
+    }
+
     // ============ LEGAL ============
     window.openLegal = function() {
       document.getElementById('legalOverlay').classList.add('open');
@@ -2300,15 +2319,23 @@
         renderCalendar();
       }
     });
+    
     document.getElementById('calPrev').addEventListener('click', (e) => {
       e.stopPropagation();
       currentCalDate.setMonth(currentCalDate.getMonth() - 1);
       renderCalendar();
     });
+    
     document.getElementById('calNext').addEventListener('click', (e) => {
       e.stopPropagation();
       currentCalDate.setMonth(currentCalDate.getMonth() + 1);
       renderCalendar();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.form-group') && !e.target.closest('.custom-dropdown')) {
+        document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+      }
     });
 
     function renderTimeSlots() {
@@ -2317,274 +2344,156 @@
       grid.innerHTML = '';
       for (let h = 12; h <= 22; h++) {
         for (let m = 0; m < 60; m += 30) {
-          if (h === 22 && m > 30) continue;
+          if (h === 22 && m === 30) break; // Последний слот 22:00
           const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'time-slot';
-          btn.textContent = timeStr;
-          if (timeStr === document.getElementById('btime').value) btn.classList.add('selected');
-          btn.addEventListener('click', (e) => {
+          const el = document.createElement('button');
+          el.type = 'button';
+          el.className = 'time-slot';
+          el.textContent = timeStr;
+          el.addEventListener('click', (e) => {
             e.stopPropagation();
             document.getElementById('btime').value = timeStr;
             document.getElementById('customTimeDropdown').classList.remove('open');
-            renderTimeSlots();
+            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
           });
-          grid.appendChild(btn);
+          grid.appendChild(el);
         }
       }
     }
+    
     document.getElementById('btime').addEventListener('click', (e) => {
       e.stopPropagation();
       toggleDropdown('customTimeDropdown', e.target);
-    });
-    document.addEventListener('click', (e) => {
-      const cal = document.getElementById('customCalendar');
-      const time = document.getElementById('customTimeDropdown');
-      const dateInput = document.getElementById('bdate');
-      const timeInput = document.getElementById('btime');
-      if (cal.classList.contains('open') && !cal.contains(e.target) && e.target !== dateInput) cal.classList.remove('open');
-      if (time.classList.contains('open') && !time.contains(e.target) && e.target !== timeInput) time.classList.remove('open');
+      if (document.getElementById('customTimeDropdown').classList.contains('open')) {
+        renderTimeSlots();
+      }
     });
 
-    // --- Гости ---
-    const guestInput = document.getElementById('bguests');
-    const guestMinus = document.getElementById('guestMinus');
-    const guestPlus = document.getElementById('guestPlus');
-    guestMinus.addEventListener('click', () => {
-      let val = parseInt(guestInput.value) || 1;
-      if (val > 1) guestInput.value = val - 1;
+    // ============ ГОСТИ ============
+    document.getElementById('guestMinus').addEventListener('click', () => {
+      const input = document.getElementById('bguests');
+      let val = parseInt(input.value) || 1;
+      if (val > 1) input.value = val - 1;
     });
-    guestPlus.addEventListener('click', () => {
-      let val = parseInt(guestInput.value) || 0;
-      if (val < 80) guestInput.value = val + 1;
+    
+    document.getElementById('guestPlus').addEventListener('click', () => {
+      const input = document.getElementById('bguests');
+      let val = parseInt(input.value) || 1;
+      if (val < 20) input.value = val + 1;
     });
-    guestInput.addEventListener('input', () => {
-      let val = parseInt(guestInput.value);
-      if (guestInput.value === '') return;
-      if (isNaN(val) || val < 1) guestInput.value = 1;
-      if (val > 80) guestInput.value = 80;
-    });
-    guestInput.addEventListener('blur', () => {
-      let val = parseInt(guestInput.value);
-      if (isNaN(val) || val < 1) guestInput.value = 1;
+
+    document.getElementById('bguests').addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val > 20) val = 20;
+      e.target.value = val;
     });
 
     // ============ TOAST ============
-    let toastTimer;
-    function showToast(text, icon = '') {
+    let toastTimeout;
+    window.showToast = function(text, icon = '✓') {
       const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toastText');
+      const toastIcon = document.getElementById('toastIcon');
+      
       if (!toast) return;
-      document.getElementById('toastText').textContent = text;
-      document.getElementById('toastIcon').textContent = icon;
+      
+      toastText.textContent = text;
+      toastIcon.textContent = icon;
+      
       toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
-    }
+      
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    };
 
-    // ============ СТАТУС РАБОТЫ ============
-    function updateRestaurantStatus() {
+    // ============ СТАТУС РАБОТЫ И РАСПИСАНИЕ ============
+    const scheduleData = {
+      'Вс': { open: 12, close: 0, label: '12:00 – 00:00' },
+      'Пн': { open: 12, close: 0, label: '12:00 – 00:00' },
+      'Вт': { open: 12, close: 0, label: '12:00 – 00:00' },
+      'Ср': { open: 12, close: 0, label: '12:00 – 00:00' },
+      'Чт': { open: 12, close: 0, label: '12:00 – 00:00' },
+      'Пт': { open: 12, close: 2, label: '12:00 – 02:00' },
+      'Сб': { open: 12, close: 2, label: '12:00 – 02:00' }
+    };
+
+    function updateStatus() {
       const now = new Date();
-      const mskOffset = 3 * 60;
-      const mskTime = new Date(now.getTime() + (mskOffset + now.getTimezoneOffset()) * 60000);
-      const hours = mskTime.getHours();
-      const minutes = mskTime.getMinutes();
-      const timeValue = hours + minutes / 60;
-      const isOpen = timeValue >= 12 && timeValue < 22.5;
-
+      const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+      const todayStr = days[now.getDay()];
+      const todayData = scheduleData[todayStr];
+      
+      const hour = now.getHours();
+      const isOpen = (todayData.close === 0) 
+        ? (hour >= todayData.open) 
+        : (hour >= todayData.open || hour < todayData.close);
+        
+      const statusTextDesktop = document.getElementById('desktopStatusText');
+      const statusTextMobile = document.getElementById('mobileStatusText');
       const desktopBadge = document.getElementById('desktopStatusBadge');
-      const desktopText = document.getElementById('desktopStatusText');
       const mobilePill = document.getElementById('mobileStatusPill');
-      const mobileText = document.getElementById('mobileStatusText');
-
-      if (isOpen) {
-        if (desktopBadge) desktopBadge.classList.remove('is-closed');
-        if (mobilePill) mobilePill.classList.remove('is-closed');
-        if (desktopText) desktopText.textContent = 'Доставка до 22:30 · Открыто';
-        if (mobileText) mobileText.textContent = 'Доставка до 22:30';
-      } else {
-        if (desktopBadge) desktopBadge.classList.add('is-closed');
-        if (mobilePill) mobilePill.classList.add('is-closed');
-        if (desktopText) desktopText.textContent = 'Закрыто до 12:00';
-        if (mobileText) mobileText.textContent = 'Закрыто до 12:00';
-      }
-
-      const scheduleText = document.getElementById('scheduleText');
-      if (scheduleText) {
-        const day = mskTime.getDay();
-        let schedule = '12:00 - 00:00';
-        if (day === 5 || day === 6) schedule = '12:00 - 02:00';
-        scheduleText.textContent = schedule;
-      }
+      
+      const text = isOpen ? 'Сейчас открыто' : 'Сейчас закрыто';
+      
+      if (statusTextDesktop) statusTextDesktop.textContent = text;
+      if (statusTextMobile) statusTextMobile.textContent = text;
+      
+      if (desktopBadge) desktopBadge.classList.toggle('is-closed', !isOpen);
+      if (mobilePill) mobilePill.classList.toggle('is-closed', !isOpen);
     }
-    updateRestaurantStatus();
-    setInterval(updateRestaurantStatus, 60000);
 
-    // ============ РАСПИСАНИЕ ============
+    function updateScheduleText() {
+      const now = new Date();
+      const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+      const todayStr = days[now.getDay()];
+      const todayData = scheduleData[todayStr];
+      const textEl = document.getElementById('scheduleText');
+      if (textEl) textEl.textContent = todayData.label;
+    }
+
+    updateStatus();
+    updateScheduleText();
+    setInterval(() => {
+      updateStatus();
+      updateScheduleText();
+    }, 60000);
+
     window.openSchedule = function(type) {
       const overlay = document.getElementById('scheduleOverlay');
-      const title = document.getElementById('scheduleTitle');
       const list = document.getElementById('scheduleList');
-      const now = new Date();
-      const mskOffset = 3 * 60;
-      const mskTime = new Date(now.getTime() + (mskOffset + now.getTimezoneOffset()) * 60000);
-      const currentDay = mskTime.getDay();
-      const days = [
-        { name: 'Понедельник', idx: 1 },
-        { name: 'Вторник', idx: 2 },
-        { name: 'Среда', idx: 3 },
-        { name: 'Четверг', idx: 4 },
-        { name: 'Пятница', idx: 5 },
-        { name: 'Суббота', idx: 6 },
-        { name: 'Воскресенье', idx: 0 },
-      ];
-      let html = '';
-      if (type === 'delivery') {
-        title.textContent = 'Время работы доставки';
-        days.forEach(d => {
-          const isToday = d.idx === currentDay;
-          html += `<div class="schedule-row ${isToday ? 'today' : ''}">
-            <span class="day-name">${d.name}${isToday ? ' (сегодня)' : ''}</span>
-            <span class="day-time">12:00 – 22:30</span>
-          </div>`;
-        });
-      } else {
-        title.textContent = 'График работы ресторана';
-        days.forEach(d => {
-          const isToday = d.idx === currentDay;
-          let time = '12:00 – 00:00';
-          if (d.idx === 5 || d.idx === 6) time = '12:00 – 02:00';
-          html += `<div class="schedule-row ${isToday ? 'today' : ''}">
-            <span class="day-name">${d.name}${isToday ? ' (сегодня)' : ''}</span>
-            <span class="day-time">${time}</span>
-          </div>`;
-        });
-      }
-      list.innerHTML = html;
+      const title = document.getElementById('scheduleTitle');
+      
+      if (!overlay || !list) return;
+      
+      title.textContent = type === 'restaurant' ? 'График работы ресторана' : 'График доставки';
+      
+      const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+      const today = new Date().getDay();
+      const todayStr = days[today === 0 ? 6 : today - 1];
+      
+      list.innerHTML = days.map(day => {
+        const data = scheduleData[day];
+        const isToday = day === todayStr;
+        return `
+          <div class="schedule-row ${isToday ? 'today' : ''}">
+            <span class="day-name">${day}</span>
+            <span class="day-time">${data.label}</span>
+          </div>
+        `;
+      }).join('');
+      
       overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
     };
+
     window.closeSchedule = function() {
       document.getElementById('scheduleOverlay').classList.remove('open');
       document.body.style.overflow = '';
     };
 
-    // ============ СКРОЛЛСПАЙ ============
-    const navLinks = document.querySelectorAll('#navLinks a');
-    const sectionIds = ['afisha', 'menu', 'delivery', 'how'];
-    function updateActiveLink() {
-      if (!navLinks.length) return;
-      let currentTarget = 'top';
-      const scrollPosition = window.scrollY;
-      const afisha = document.getElementById('afisha');
-      if (afisha && scrollPosition < afisha.offsetTop - 200) currentTarget = 'top';
-      else if ((window.innerHeight + scrollPosition) >= document.body.offsetHeight - 50) currentTarget = 'contacts';
-      else {
-        for (let i = sectionIds.length - 1; i >= 0; i--) {
-          const el = document.getElementById(sectionIds[i]);
-          if (el && el.getBoundingClientRect().top <= 250) { currentTarget = sectionIds[i]; break; }
-        }
-      }
-      navLinks.forEach(link => link.classList.toggle('active', link.dataset.target === currentTarget));
-    }
-    window.addEventListener('scroll', updateActiveLink, { passive: true });
-    window.addEventListener('resize', updateActiveLink);
-    updateActiveLink();
-
-    // ============ LIQUID GLASS ============
-    function createDisplacementMap(el) {
-      const rect = el.getBoundingClientRect();
-      const w = Math.round(rect.width), h = Math.round(rect.height);
-      if (w < 4 || h < 4) return null;
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext('2d', { willReadFrequently: true });
-      if (!ctx) return null;
-      const imageData = ctx.createImageData(w, h);
-      const data = imageData.data;
-      let radius = parseFloat(window.getComputedStyle(el).borderRadius) || 22;
-      radius = Math.min(radius, w / 2, h / 2);
-      const cx = w / 2, cy = h / 2;
-      const hw = w / 2 - radius, hh = h / 2 - radius;
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          const idx = (y * w + x) * 4;
-          const dx = Math.abs(x - cx) - hw;
-          const dy = Math.abs(y - cy) - hh;
-          const d = Math.sqrt(Math.max(dx, 0) ** 2 + Math.max(dy, 0) ** 2) - radius;
-          let gx = 0, gy = 0;
-          if (Math.abs(dx) > 0.001 || Math.abs(dy) > 0.001) {
-            const len = Math.sqrt(dx * dx + dy * dy) || 1;
-            gx = dx / len; gy = dy / len;
-          }
-          let strength = 0;
-          if (d < 0) {
-            const normDist = Math.min(1, Math.max(0, -d / radius));
-            strength = (1 - normDist) * (1 - normDist);
-          }
-          strength = Math.min(1, strength * 1.2);
-          data[idx] = Math.max(0, Math.min(255, Math.round(gx * strength * 127 + 128)));
-          data[idx + 1] = Math.max(0, Math.min(255, Math.round(gy * strength * 127 + 128)));
-          data[idx + 2] = 128;
-          data[idx + 3] = 255;
-        }
-      }
-      ctx.putImageData(imageData, 0, 0);
-      return canvas.toDataURL('image/png');
-    }
-
-    const supportsSvgFilter = (() => {
-      const div = document.createElement('div');
-      div.style.backdropFilter = 'url(#test)';
-      return div.style.backdropFilter !== '';
-    })();
-
-    const svgNS = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(svgNS, 'svg');
-    svg.setAttribute('width', '0'); svg.setAttribute('height', '0');
-    svg.style.position = 'absolute';
-    svg.style.pointerEvents = 'none';
-    document.body.appendChild(svg);
-
-    const liquidEls = document.querySelectorAll('[data-liquid]');
-    let idCounter = 0;
-    liquidEls.forEach((el) => {
-      const dataUrl = createDisplacementMap(el);
-      if (!dataUrl) return;
-      const filterId = `liquid-${idCounter++}`;
-      const filter = document.createElementNS(svgNS, 'filter');
-      filter.setAttribute('id', filterId);
-      filter.setAttribute('x', '0'); filter.setAttribute('y', '0');
-      filter.setAttribute('width', '100%'); filter.setAttribute('height', '100%');
-      filter.setAttribute('filterUnits', 'objectBoundingBox');
-      filter.setAttribute('color-interpolation-filters', 'sRGB');
-      const feImage = document.createElementNS(svgNS, 'feImage');
-      feImage.setAttribute('href', dataUrl);
-      feImage.setAttribute('result', 'displacementMap');
-      feImage.setAttribute('x', '0'); feImage.setAttribute('y', '0');
-      feImage.setAttribute('width', '100%'); feImage.setAttribute('height', '100%');
-      feImage.setAttribute('preserveAspectRatio', 'none');
-      const feDisplacement = document.createElementNS(svgNS, 'feDisplacementMap');
-      feDisplacement.setAttribute('in', 'SourceGraphic');
-      feDisplacement.setAttribute('in2', 'displacementMap');
-      feDisplacement.setAttribute('scale', '8');
-      feDisplacement.setAttribute('xChannelSelector', 'R');
-      feDisplacement.setAttribute('yChannelSelector', 'G');
-      filter.appendChild(feImage);
-      filter.appendChild(feDisplacement);
-      svg.appendChild(filter);
-      if (supportsSvgFilter) {
-        el.style.backdropFilter = `url(#${filterId}) blur(0.3px) saturate(1.3)`;
-        el.style.webkitBackdropFilter = `url(#${filterId}) blur(0.3px) saturate(1.3)`;
-      }
-    });
-
-    // ============ INIT ============
-    updateCart();
-    renderTimeSlots();
-    document.addEventListener('DOMContentLoaded', () => {
-      document.body.style.overflow = '';
-    });
   </script>
 </body>
 </html>
