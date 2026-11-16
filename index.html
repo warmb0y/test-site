@@ -1949,6 +1949,21 @@
     };
 
         // ============ ВХОД / ТЕЛЕФОН / КОД ============
+        // ============ ВХОД / ТЕЛЕФОН / КОД ============
+    
+    // Добавляем недостающие функции для окна Входа
+    window.openLogin = function() {
+      document.getElementById('loginOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+    
+    window.closeLogin = function() {
+      document.getElementById('loginOverlay').classList.remove('open');
+      if (!document.querySelector('.phone-overlay.open, .legal-overlay.open')) {
+        document.body.style.overflow = '';
+      }
+    };
+
     let currentRequestId = null; // Храним ID запроса от Telegram
     let currentPhoneForAuth = ''; // Храним номер телефона
 
