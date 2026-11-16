@@ -703,15 +703,15 @@
     .checkout-btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
 
     /* ---------- МОДАЛКИ (общие) ---------- */
-    .booking-overlay, .schedule-overlay, .login-overlay, .phone-overlay, .legal-overlay {
+    .booking-overlay, .schedule-overlay, .login-overlay, .phone-overlay, .legal-overlay, .profile-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(10px);
       z-index: 400; opacity: 0; pointer-events: none; transition: opacity 0.3s;
       display: flex; align-items: center; justify-content: center; padding: 20px;
     }
-    .booking-overlay.open, .schedule-overlay.open, .login-overlay.open, .phone-overlay.open, .legal-overlay.open { opacity: 1; pointer-events: auto; }
+    .booking-overlay.open, .schedule-overlay.open, .login-overlay.open, .phone-overlay.open, .legal-overlay.open, .profile-overlay.open { opacity: 1; pointer-events: auto; }
 
     /* Скрываем скроллбар модалки, чтобы не было стрелок сбоку */
-    .booking-modal, .login-modal, .phone-modal, .legal-modal, .schedule-modal {
+    .booking-modal, .login-modal, .phone-modal, .legal-modal, .schedule-modal, .profile-modal {
       background: #0d1f15; border: 1px solid rgba(62, 165, 106, 0.2); border-radius: 32px;
       width: 100%; max-width: 480px; padding: 40px; position: relative;
       box-shadow: 0 20px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.03);
@@ -725,23 +725,23 @@
     /* Скрываем скроллбар WebKit (Chrome, Safari) */
     .booking-modal::-webkit-scrollbar, .login-modal::-webkit-scrollbar, 
     .phone-modal::-webkit-scrollbar, .legal-modal::-webkit-scrollbar, 
-    .schedule-modal::-webkit-scrollbar { 
+    .schedule-modal::-webkit-scrollbar, .profile-modal::-webkit-scrollbar { 
       display: none; 
     }
 
     .booking-overlay.open .booking-modal, .login-overlay.open .login-modal,
     .phone-overlay.open .phone-modal, .legal-overlay.open .legal-modal,
-    .schedule-overlay.open .schedule-modal { transform: scale(1) translateY(0); }
+    .schedule-overlay.open .schedule-modal, .profile-overlay.open .profile-modal { transform: scale(1) translateY(0); }
 
-    .booking-close, .login-close, .phone-close, .schedule-close {
+    .booking-close, .login-close, .phone-close, .schedule-close, .profile-close {
       position: absolute; top: 20px; right: 20px; width: 40px; height: 40px;
       border-radius: 20px; background: rgba(255,255,255,0.05); border: none;
       color: var(--text); font-size: 18px; cursor: pointer; display: flex;
       align-items: center; justify-content: center; transition: background 0.2s; z-index: 10;
     }
-    .booking-close:hover, .login-close:hover, .phone-close:hover, .schedule-close:hover { background: rgba(255,255,255,0.1); }
+    .booking-close:hover, .login-close:hover, .phone-close:hover, .schedule-close:hover, .profile-close:hover { background: rgba(255,255,255,0.1); }
 
-    .booking-modal h2, .login-modal h2, .phone-modal h2, .legal-modal h2, .schedule-modal h2 {
+    .booking-modal h2, .login-modal h2, .phone-modal h2, .legal-modal h2, .schedule-modal h2, .profile-modal h2 {
       font-family:'Cormorant-Garamond', sans-serif; font-size: 16px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 8px;
     }
     .booking-modal p, .login-modal p, .phone-modal p {
@@ -891,6 +891,49 @@
     }
     .phone-submit:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
 
+    /* ---------- ПРОФИЛЬ ---------- */
+    .profile-modal { max-width: 420px; padding: 32px; }
+    .profile-header { text-align: center; margin-bottom: 24px; }
+    .profile-avatar {
+      width: 72px; height: 72px; border-radius: 36px; background: var(--green-soft);
+      border: 2px solid rgba(62, 165, 106, 0.4); display: flex; align-items: center;
+      justify-content: center; font-size: 32px; margin: 0 auto 12px;
+      box-shadow: 0 4px 16px rgba(62, 165, 106, 0.2);
+    }
+    .profile-header h2 { font-size: 24px; font-weight: 500; margin-bottom: 4px; }
+    .profile-header p { font-size: 14px; color: var(--muted); }
+
+    .profile-bonus-card {
+      background: linear-gradient(135deg, rgba(62, 165, 106, 0.15), rgba(62, 165, 106, 0.05));
+      border: 1px solid rgba(62, 165, 106, 0.3); border-radius: 20px;
+      padding: 20px; display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .bonus-info { display: flex; flex-direction: column; gap: 4px; }
+    .bonus-label { font-size: 13px; color: var(--green-light); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .bonus-value { font-size: 28px; font-weight: 500; color: #fff; }
+    .bonus-value .cur { font-size: 16px; color: var(--muted); }
+
+    .profile-section { margin-bottom: 28px; }
+    .profile-section h3 { font-size: 16px; font-weight: 500; margin-bottom: 16px; color: var(--text); }
+    
+    .profile-order {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .profile-order:last-child { border-bottom: none; }
+    .order-info { display: flex; flex-direction: column; gap: 4px; }
+    .order-date { font-size: 13px; color: var(--green-light); font-weight: 500; }
+    .order-items { font-size: 14px; color: var(--text); }
+    .order-price { font-size: 15px; font-weight: 500; }
+
+    .profile-logout {
+      width: 100%; height: 50px; border-radius: 25px; border: 1px solid rgba(255, 92, 92, 0.3);
+      background: rgba(255, 92, 92, 0.1); color: #ff9999; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .profile-logout:hover { background: rgba(255, 92, 92, 0.2); color: #fff; }
+
     /* ---------- LEGAL ---------- */
     .legal-modal { max-width: 400px; padding: 40px 32px; }
     .legal-modal h2 { font-size: 24px; margin-bottom: 28px; text-align: center; }
@@ -1038,7 +1081,7 @@
         <button class="glass pill" onclick="openCart()">
           🛒 Корзина <span class="cart-badge" id="cartBadge">0</span>
         </button>
-        <button class="glass pill primary" onclick="openLogin()">Войти</button>
+        <button class="glass pill primary" onclick="openLogin()" id="desktopLoginBtn">Войти</button>
       </div>
     </nav>
 
@@ -1252,7 +1295,7 @@
         <span id="mobileStatusText">Проверка времени...</span>
       </div>
       <div style="margin-top: 16px; padding: 0 20px;">
-        <button class="glass pill primary" style="width: 100%; height: 54px; font-size: 16px;" onclick="openLogin()">
+        <button class="glass pill primary" style="width: 100%; height: 54px; font-size: 16px;" onclick="openLogin()" id="mobileLoginBtn">
           Войти
         </button>
       </div>
@@ -1497,6 +1540,52 @@
       <div class="phone-legal">
         Не пришел код? <a href="#" onclick="event.preventDefault(); resendCode()">Отправить снова</a>
       </div>
+    </div>
+  </div>
+
+  <!-- ================= ПРОФИЛЬ ================= -->
+  <div class="profile-overlay" id="profileOverlay" onclick="if(event.target === this) closeProfile()">
+    <div class="profile-modal">
+      <button class="profile-close" onclick="closeProfile()" aria-label="Закрыть">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      
+      <div class="profile-header">
+        <div class="profile-avatar">👤</div>
+        <h2 id="profileName">Гость</h2>
+        <p id="profilePhone">+7 (XXX) XXX-XX-XX</p>
+      </div>
+
+      <div class="profile-bonus-card">
+        <div class="bonus-info">
+          <span class="bonus-label">Бонусный счет</span>
+          <span class="bonus-value">450 <span class="cur">₽</span></span>
+        </div>
+        <button class="glass pill primary" style="height: 40px; font-size: 13px;" onclick="alert('Скоро здесь можно будет потратить бонусы!')">Потратить</button>
+      </div>
+
+      <div class="profile-section">
+        <h3>История заказов</h3>
+        <div class="profile-order">
+          <div class="order-info">
+            <span class="order-date">12 Октября</span>
+            <span class="order-items">Латте, Круассан с миндалем</span>
+          </div>
+          <span class="order-price">540 ₽</span>
+        </div>
+        <div class="profile-order">
+          <div class="order-info">
+            <span class="order-date">5 Октября</span>
+            <span class="order-items">Скрембл с лососем, Американо</span>
+          </div>
+          <span class="order-price">790 ₽</span>
+        </div>
+      </div>
+
+      <button class="profile-logout" onclick="logout()">Выйти из профиля</button>
     </div>
   </div>
   
@@ -1963,6 +2052,42 @@
 
     let currentRequestId = null; // Храним ID запроса от Telegram
     let currentPhoneForAuth = ''; // Храним номер телефона
+    let currentUser = null; // Храним данные текущего пользователя
+
+    // ============ ПРОФИЛЬ ============
+    window.openProfile = function() {
+      if (!currentUser) {
+        openLogin();
+        return;
+      }
+      document.getElementById('profileName').textContent = currentUser.name || 'Гость';
+      document.getElementById('profilePhone').textContent = `+7 ${currentUser.phone}`;
+      document.getElementById('profileOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeProfile = function() {
+      document.getElementById('profileOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    };
+
+    window.logout = function() {
+      currentUser = null;
+      closeProfile();
+      showToast('Вы вышли из профиля', '👋');
+      
+      const desktopBtn = document.getElementById('desktopLoginBtn');
+      if (desktopBtn) {
+        desktopBtn.textContent = 'Войти';
+        desktopBtn.onclick = openLogin;
+      }
+      
+      const mobileBtn = document.getElementById('mobileLoginBtn');
+      if (mobileBtn) {
+        mobileBtn.textContent = 'Войти';
+        mobileBtn.onclick = openLogin;
+      }
+    };
 
     window.openPhone = function() {
       closeLogin();
@@ -2052,8 +2177,25 @@
 
         if (res.ok && data.valid) {
           showToast('✓ Вы успешно вошли!', '🎉');
+          
+          // Сохраняем пользователя (в реальном проекте здесь данные с сервера)
+          currentUser = { name: 'Иван', phone: currentPhoneForAuth };
+          
           closeCode();
-          document.querySelectorAll('.nav-actions button:last-child').forEach(btn => btn.textContent = 'Профиль');
+          
+          // Меняем кнопку в навбаре на "Профиль"
+          const desktopBtn = document.getElementById('desktopLoginBtn');
+          if (desktopBtn) {
+            desktopBtn.textContent = 'Профиль';
+            desktopBtn.onclick = openProfile;
+          }
+          
+          // Меняем кнопку в мобильной версии
+          const mobileBtn = document.getElementById('mobileLoginBtn');
+          if (mobileBtn) {
+            mobileBtn.textContent = 'Профиль';
+            mobileBtn.onclick = openProfile;
+          }
         } else {
           showToast('❌ Неверный код', '⚠️');
           codeInput.value = '';
