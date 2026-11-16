@@ -579,6 +579,7 @@
       z-index: 10;
     }
 
+    /* ИСПРАВЛЕНО: Аккуратный текст в сторис */
     .story-info {
       position: absolute;
       bottom: 0;
@@ -587,6 +588,9 @@
       padding: 28px 24px 24px;
       z-index: 15;
       color: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
     .story-info .tag {
       font-size: 11px;
@@ -594,20 +598,17 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--gold);
-      margin-bottom: 6px;
     }
     .story-info h3 {
       font-size: 24px;
       font-weight: 500;
       letter-spacing: -0.02em;
-      margin-bottom: 8px;
       line-height: 1.2;
     }
     .story-info p {
       font-size: 14px;
       color: rgba(255,255,255,0.75);
       line-height: 1.45;
-      margin-bottom: 16px;
     }
     .story-info .meta {
       display: flex;
@@ -615,10 +616,9 @@
       gap: 16px;
       font-size: 13px;
       color: rgba(255,255,255,0.8);
-      margin-bottom: 18px;
+      margin-bottom: 8px;
       flex-wrap: wrap;
     }
-    .story-info .meta span { display: flex; align-items: center; gap: 6px; }
 
     .story-book-btn {
       width: 100%;
@@ -637,6 +637,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      margin-top: 8px;
     }
     .story-book-btn:active { transform: scale(0.97); }
 
@@ -1451,40 +1452,46 @@
 
   <!-- ================= МОДАЛКА БЛЮДА ================= -->
   <div class="dish-modal-overlay" id="dishModalOverlay" onclick="if(event.target === this) closeDishModal()">
-    <div class="dish-modal">
+    <div class="dish-modal" id="dishModalContent">
       <button class="close-btn" onclick="closeDishModal()" aria-label="Закрыть">✕</button>
-      <div class="dish-modal-img"><img id="dmImg" src="" alt=""></div>
-      <div class="dish-modal-content">
-        <div class="dish-modal-header">
-          <div>
-            <div class="dish-modal-title" id="dmTitle"></div>
-            <div class="dish-modal-weight" id="dmWeight"></div>
+      
+      <!-- Скроллируемая часть -->
+      <div class="dish-modal-scroll">
+        <div class="dish-modal-img"><img id="dmImg" src="" alt=""></div>
+        <div class="dish-modal-content">
+          <div class="dish-modal-header">
+            <div>
+              <div class="dish-modal-title" id="dmTitle"></div>
+              <div class="dish-modal-weight" id="dmWeight"></div>
+            </div>
+            <div class="dish-modal-price" id="dmPrice"></div>
           </div>
-          <div class="dish-modal-price" id="dmPrice"></div>
-        </div>
-        <div class="dish-modal-desc" id="dmDesc"></div>
-        <div class="dish-modal-compound" id="dmCompound"></div>
-        
-        <div class="kbju-block">
-          <div class="kbju-header">
-            <div class="kbju-toggle">
-              <button class="active" onclick="toggleKbju('portion', this)">На порцию</button>
-              <button onclick="toggleKbju('100g', this)">На 100 г</button>
+          <div class="dish-modal-desc" id="dmDesc"></div>
+          <div class="dish-modal-compound" id="dmCompound"></div>
+          
+          <div class="kbju-block">
+            <div class="kbju-header">
+              <div class="kbju-toggle">
+                <button class="active" onclick="toggleKbju('portion', this)">На порцию</button>
+                <button onclick="toggleKbju('100g', this)">На 100 г</button>
+              </div>
+            </div>
+            <div class="kbju-grid">
+              <div class="kbju-item"><div class="val" id="kbjuCal">0</div><div class="lbl">Ккал</div></div>
+              <div class="kbju-item"><div class="val" id="kbjuProt">0</div><div class="lbl">Белки</div></div>
+              <div class="kbju-item"><div class="val" id="kbjuFat">0</div><div class="lbl">Жиры</div></div>
+              <div class="kbju-item"><div class="val" id="kbjuCarb">0</div><div class="lbl">Углеводы</div></div>
             </div>
           </div>
-          <div class="kbju-grid">
-            <div class="kbju-item"><div class="val" id="kbjuCal">0</div><div class="lbl">Ккал</div></div>
-            <div class="kbju-item"><div class="val" id="kbjuProt">0</div><div class="lbl">Белки</div></div>
-            <div class="kbju-item"><div class="val" id="kbjuFat">0</div><div class="lbl">Жиры</div></div>
-            <div class="kbju-item"><div class="val" id="kbjuCarb">0</div><div class="lbl">Углеводы</div></div>
+
+          <div class="addons-section">
+            <h4>Добавить к блюду</h4>
+            <div id="dmAddons"></div>
           </div>
         </div>
-
-        <div class="addons-section">
-          <h4>Добавить к блюду</h4>
-          <div id="dmAddons"></div>
-        </div>
       </div>
+
+      <!-- Футер с кнопкой (прижат к низу) -->
       <div class="dish-modal-footer">
         <div class="qty-selector">
           <button onclick="changeModalQty(-1)">−</button>
