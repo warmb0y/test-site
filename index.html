@@ -1948,17 +1948,10 @@
       document.getElementById('customTimeDropdown').classList.remove('open');
     };
 
-    // ============ ВХОД / ТЕЛЕФОН ============
-    window.openLogin = function() {
-      document.getElementById('loginOverlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    };
-    window.closeLogin = function() {
-      document.getElementById('loginOverlay').classList.remove('open');
-      if (!document.querySelector('.phone-overlay.open, .legal-overlay.open')) {
-        document.body.style.overflow = '';
-      }
-    };
+        // ============ ВХОД / ТЕЛЕФОН / КОД ============
+    let currentRequestId = null; // Храним ID запроса от Telegram
+    let currentPhoneForAuth = ''; // Храним номер телефона
+
     window.openPhone = function() {
       closeLogin();
       document.getElementById('phoneOverlay').classList.add('open');
@@ -1966,20 +1959,130 @@
       if (input) input.value = '';
       validatePhone();
     };
+    
     window.closePhone = function() {
       document.getElementById('phoneOverlay').classList.remove('open');
-      if (!document.querySelector('.login-overlay.open, .legal-overlay.open')) {
+      if (!document.querySelector('.login-overlay.open, .legal-overlay.open, .code-overlay.open')) {
         document.body.style.overflow = '';
       }
     };
-    window.submitPhone = function() {
-      const input = document.getElementById('phoneInput');
-      const val = input ? input.value.replace(/\D/g, '') : '';
-      if (val.length === 10) {
-        showToast('✓ Код отправлен на номер +7 ' + val, '📱');
-        closePhone();
+
+    window.closeCode = function() {
+      document.getElementById('codeOverlay').classList.remove('open');
+      document.getElementById('codeInput').value = '';
+      document.getElementById('codeSubmit').disabled = true;
+      if (!document.querySelector('.login-overlay.open, .legal-overlay.open, .phone-overlay.open')) {
+        document.body.style.overflow = '';
       }
     };
+
+    window.submitPhone = async function() {
+      const input = document.getElementById('phoneInput');
+      const val = input ? input.value.replace(/\D/g, '') : '';
+      
+      if (val.length === 10) {
+        currentPhoneForAuth = val;
+        const btn = document.getElementById('phoneSubmit');
+        const originalText = btn.textContent;
+        btn.textContent = 'Отправка...';
+        btn.disabled = true;
+
+        try {
+          const res = await fetch('/api/send-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone: val })
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.request_id) {
+            currentRequestId = data.request_id;
+            closePhone();
+            document.getElementById('codeOverlay').classList.add('open');
+            showToast('Код отправлен в Telegram', '📱');
+            // Автофокус на поле ввода кода
+            setTimeout(() => document.getElementById('codeInput').focus(), 300);
+          } else {
+            showToast('❌ ' + (data.error || 'Ошибка отправки'), '⚠️');
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('❌ Сервер недоступен', '⚠️');
+        } finally {
+          btn.textContent = originalText;
+          validatePhone(); // Вернет кнопку в исходное состояние
+        }
+      }
+    };
+
+    window.submitCode = async function() {
+      const codeInput = document.getElementById('codeInput');
+      const code = codeInput.value.replace(/\D/g, '');
+      
+      if (code.length !== 6 || !currentRequestId) return;
+
+      const btn = document.getElementById('codeSubmit');
+      const originalText = btn.textContent;
+      btn.textContent = 'Проверка...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/check-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            request_id: currentRequestId, 
+            code: code 
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.valid) {
+          showToast('✓ Вы успешно вошли!', '🎉');
+          closeCode();
+          // Здесь можно обновить UI на "профиль" вместо кнопки "Войти"
+          document.querySelectorAll('.nav-actions button:last-child').forEach(btn => btn.textContent = 'Профиль');
+        } else {
+          showToast('❌ Неверный код', '⚠️');
+          codeInput.value = '';
+          btn.disabled = true;
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('❌ Ошибка проверки', '⚠️');
+      } finally {
+        btn.textContent = originalText;
+      }
+    };
+
+    window.resendCode = async function() {
+      if (!currentPhoneForAuth) return;
+      const btn = event.target;
+      const originalText = btn.textContent;
+      btn.textContent = 'Отправка...';
+      btn.style.pointerEvents = 'none';
+
+      try {
+        const res = await fetch('/api/send-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: currentPhoneForAuth })
+        });
+        const data = await res.json();
+        if (res.ok && data.request_id) {
+          currentRequestId = data.request_id;
+          showToast('Код отправлен повторно', '📱');
+        }
+      } catch (err) {
+        showToast('❌ Ошибка отправки', '⚠️');
+      } finally {
+        btn.textContent = originalText;
+        btn.style.pointerEvents = 'auto';
+      }
+    };
+
     function validatePhone() {
       const input = document.getElementById('phoneInput');
       const btn = document.getElementById('phoneSubmit');
@@ -1987,28 +2090,21 @@
       const val = input.value.replace(/\D/g, '');
       btn.disabled = val.length !== 10;
     }
+
+    // Валидация кода (только цифры)
     document.addEventListener('DOMContentLoaded', () => {
-      const phoneInput = document.getElementById('phoneInput');
-      if (phoneInput) {
-        phoneInput.addEventListener('input', (e) => {
+      const codeInput = document.getElementById('codeInput');
+      if (codeInput) {
+        codeInput.addEventListener('input', (e) => {
           let val = e.target.value.replace(/\D/g, '');
-          if (val.length > 10) val = val.slice(0, 10);
-          let formatted = '';
-          if (val.length > 0) formatted = '(' + val.slice(0, 3);
-          if (val.length >= 4) formatted += ') ' + val.slice(3, 6);
-          if (val.length >= 7) formatted += '-' + val.slice(6, 8);
-          if (val.length >= 9) formatted += '-' + val.slice(8, 10);
-          e.target.value = formatted;
-          validatePhone();
-        });
-        phoneInput.addEventListener('keypress', (e) => {
-          if (!/[0-9]/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)) {
-            e.preventDefault();
-          }
+          if (val.length > 6) val = val.slice(0, 6);
+          e.target.value = val;
+          
+          const btn = document.getElementById('codeSubmit');
+          if (btn) btn.disabled = val.length !== 6;
         });
       }
     });
-
     // ============ LEGAL ============
     window.openLegal = function() {
       document.getElementById('legalOverlay').classList.add('open');
