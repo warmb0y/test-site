@@ -1,4 +1,8 @@
 export default async function handler(req, res) {
+  console.log('--- FUNCTION STARTED ---'); // Это должно появиться в логах
+  console.log('Method:', req.method);
+  
+  try {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -60,5 +64,9 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error(err);
     return res.status(500).json({ ok: false, error: 'Internal server error' });
+  }
+  } catch (error) {
+    console.error('CAUGHT ERROR:', error); // Это покажет ошибку, если она внутри try
+    res.status(500).json({ error: error.message });
   }
 }
