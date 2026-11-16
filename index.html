@@ -172,11 +172,28 @@
 
     /* ---------- STORIES (АФИША) ---------- */
     .stories-grid { display: flex; gap: clamp(16px, 3vw, 32px); flex-wrap: wrap; justify-content: flex-start; position: relative; z-index: 2; }
-    .story-item { width: clamp(140px, 18vw, 200px); display: flex; flex-direction: column; align-items: center; gap: 14px; cursor: pointer; transition: transform 0.2s; }
+    .story-item { width: clamp(140px, 18vw, 200px); display: flex; flex-direction: column; align-items: center; gap: 14px; cursor: pointer; transition: transform 0.2s; flex-shrink: 0; }
     .story-item:hover { transform: translateY(-4px); }
-    .story-ring { width: 100%; aspect-ratio: 1; border-radius: 50%; padding: 5px; background: linear-gradient(135deg, #4ab97a, #1a5c35, #d4a24a, #4ab97a); background-size: 300% 300%; animation: ringSpin 6s linear infinite; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+    
+    /* Фикс круглой формы */
+    .story-ring { 
+      width: 100%; 
+      height: clamp(140px, 18vw, 200px); /* Жестко задаем высоту такую же, как ширину */
+      aspect-ratio: 1 / 1;
+      border-radius: 50%; 
+      padding: 5px; 
+      background: linear-gradient(135deg, #4ab97a, #1a5c35, #d4a24a, #4ab97a); 
+      background-size: 300% 300%; 
+      animation: ringSpin 6s linear infinite; 
+      display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 8px 24px rgba(0,0,0,0.4); 
+    }
     @keyframes ringSpin { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-    .story-thumb { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: #0d1f15; position: relative; display: flex; align-items: center; justify-content: center; font-size: clamp(32px, 5vw, 64px); border: 4px solid var(--bg); }
+    
+    .story-thumb { 
+      width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: #0d1f15; 
+      position: relative; display: flex; align-items: center; justify-content: center; 
+      font-size: clamp(32px, 5vw, 64px); border: 4px solid var(--bg); 
+    }
     .story-thumb img, .story-thumb video { width: 100%; height: 100%; object-fit: cover; }
     .story-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 60%); pointer-events: none; }
     .story-label { font-size: clamp(13px, 1.5vw, 16px); font-weight: 500; text-align: center; line-height: 1.3; }
@@ -207,10 +224,6 @@
     .story-info .meta { display: flex; align-items: center; gap: 16px; font-size: 13px; color: rgba(255,255,255,0.8); margin-bottom: 18px; flex-wrap: wrap; }
     .story-book-btn { width: 100%; height: 50px; border-radius: 25px; border: none; background: linear-gradient(135deg, #4ab97a 0%, #2d8a52 50%, #1a5c35 100%); color: #f0fbf3; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; transition: transform 0.2s; }
     .story-book-btn:active { transform: scale(0.97); }
-    
-    /* Индикатор паузы */
-    .story-pause-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(0,0,0,0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.2s; backdrop-filter: blur(5px); }
-    .story-pause-indicator.visible { opacity: 1; }
 
     /* ---------- MENU GRID ---------- */
     .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: clamp(16px, 2vw, 24px); position: relative; z-index: 2; }
@@ -300,10 +313,9 @@
     .dish-modal-desc { font-size: 14px; color: var(--text); line-height: 1.5; font-family: 'Lora', sans-serif; }
     .dish-modal-compound { font-size: 13px; color: var(--muted); line-height: 1.5; font-family: 'Lora', sans-serif; }
     
-    /* КБЖУ */
+    /* КБЖУ (без заголовка) */
     .kbju-block { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 16px; border: 1px solid rgba(255,255,255,0.06); }
-    .kbju-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .kbju-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--green-light); }
+    .kbju-header { display: flex; justify-content: flex-end; margin-bottom: 12px; } /* Выравниваем переключатель вправо */
     .kbju-toggle { display: flex; background: rgba(0,0,0,0.3); border-radius: 10px; padding: 2px; }
     .kbju-toggle button { padding: 4px 12px; border-radius: 8px; border: none; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
     .kbju-toggle button.active { background: var(--green); color: #fff; font-weight: 500; }
@@ -376,7 +388,7 @@
       .mobile-cart-btn { width: 100%; height: 54px; border-radius: 27px; border: none; background: linear-gradient(135deg, #4ab97a 0%, #2d8a52 50%, #1a5c35 100%); color: #f0fbf3; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; }
       
       .story-viewer-inner { max-width: 100%; height: 100vh; max-height: none; border-radius: 0; }
-      .story-nav { display: none; } /* На мобилке свайпы */
+      .story-nav { display: none; }
     }
   </style>
 </head>
@@ -542,9 +554,6 @@
         <p id="storyDesc"></p>
         <button class="story-book-btn" id="storyBookBtn">Забронировать</button>
       </div>
-      <div class="story-pause-indicator" id="storyPauseIndicator">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
-      </div>
     </div>
   </div>
 
@@ -566,7 +575,6 @@
         
         <div class="kbju-block">
           <div class="kbju-header">
-            <div class="kbju-title">КБЖУ</div>
             <div class="kbju-toggle">
               <button class="active" onclick="toggleKbju('portion', this)">На порцию</button>
               <button onclick="toggleKbju('100g', this)">На 100 г</button>
@@ -596,16 +604,16 @@
     </div>
   </div>
 
-  <!-- BOOKING, SCHEDULE, LOGIN, PHONE, CODE, PROFILE, LEGAL -->
+  <!-- BOOKING, LOGIN, PROFILE, ETC -->
   <div class="booking-overlay" id="bookingOverlay" onclick="if(event.target === this) closeBooking()">
     <div class="booking-modal">
       <button class="close-btn" onclick="closeBooking()">✕</button>
       <h2 style="font-size: 24px; margin-bottom: 8px;">Забронировать стол</h2>
       <p style="color: var(--muted); margin-bottom: 24px;">Оставьте заявку — мы свяжемся с вами.</p>
       <form class="booking-form" id="bookingForm" onsubmit="submitBooking(event)">
-        <div class="form-group"><label>Имя</label><input type="text" id="bname" placeholder="Иван Иванов" required></div>
-        <div class="form-group"><label>Телефон</label><input type="tel" id="bphone" placeholder="+7 (___) ___-__-__" required></div>
-        <button type="submit" class="booking-submit glass pill primary" style="width: 100%; height: 54px; margin-top: 10px;">Забронировать</button>
+        <div class="form-group" style="margin-bottom: 16px;"><label>Имя</label><input type="text" id="bname" placeholder="Иван Иванов" required style="width: 100%; height: 50px; padding: 0 16px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;"></div>
+        <div class="form-group" style="margin-bottom: 24px;"><label>Телефон</label><input type="tel" id="bphone" placeholder="+7 (___) ___-__-__" required style="width: 100%; height: 50px; padding: 0 16px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;"></div>
+        <button type="submit" class="glass pill primary" style="width: 100%; height: 54px;">Забронировать</button>
       </form>
     </div>
   </div>
@@ -624,7 +632,7 @@
       <button class="close-btn" onclick="closePhone()">✕</button>
       <h2 style="font-size: 24px; margin-bottom: 8px;">Введите номер</h2>
       <p style="color: var(--muted); margin-bottom: 24px;">Код придет в Telegram</p>
-      <input type="tel" id="phoneInput" class="phone-input" style="width: 100%; height: 54px; margin-bottom: 20px; text-align: center;" placeholder="+7 (999) 123-45-67">
+      <input type="tel" id="phoneInput" class="phone-input" style="width: 100%; height: 54px; margin-bottom: 20px; text-align: center; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; font-size: 18px;" placeholder="+7 (999) 123-45-67">
       <button class="glass pill primary" id="phoneSubmit" onclick="submitPhone()" style="width: 100%; height: 54px;" disabled>Получить код</button>
     </div>
   </div>
@@ -633,7 +641,7 @@
     <div class="phone-modal" style="text-align: center;">
       <button class="close-btn" onclick="closeCode()">✕</button>
       <h2 style="font-size: 24px; margin-bottom: 8px;">Введите код</h2>
-      <input type="text" id="codeInput" class="phone-input" style="width: 100%; height: 54px; margin-bottom: 20px; text-align: center; font-size: 24px; letter-spacing: 0.5em;" placeholder="000000" maxlength="6">
+      <input type="text" id="codeInput" class="phone-input" style="width: 100%; height: 54px; margin-bottom: 20px; text-align: center; font-size: 24px; letter-spacing: 0.5em; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white;" placeholder="000000" maxlength="6">
       <button class="glass pill primary" id="codeSubmit" onclick="submitCode()" style="width: 100%; height: 54px;" disabled>Подтвердить</button>
     </div>
   </div>
@@ -871,7 +879,6 @@
       const addonPrice = addons.reduce((s, a) => s + a.price, 0);
       const itemPrice = dish.price + addonPrice;
       
-      // Уникальный ID для позиции с учетом добавок
       const cartItemId = id + '_' + addons.map(a => a.name).join('_');
       const existing = cart.find(i => i.cartItemId === cartItemId);
       
@@ -1014,7 +1021,7 @@
             return;
           }
         } else {
-          progressStartTime = now - progressElapsed; // Сдвигаем время
+          progressStartTime = now - progressElapsed; 
         }
         progressRaf = requestAnimationFrame(tick);
       }
@@ -1032,7 +1039,6 @@
       document.body.style.overflow = '';
       document.querySelectorAll('#storySlides video').forEach(v => v.pause());
       isPaused = false;
-      document.getElementById('storyPauseIndicator').classList.remove('visible');
     };
 
     window.nextSlide = function() {
@@ -1067,19 +1073,16 @@
       }
     };
 
-    // Пауза при удержании (Mouse & Touch)
+    // Пауза при удержании (без иконки)
     const storyInner = document.getElementById('storyViewerInner');
-    const pauseIndicator = document.getElementById('storyPauseIndicator');
     
     function pauseStory() {
       isPaused = true;
-      pauseIndicator.classList.add('visible');
       document.querySelectorAll('#storySlides video').forEach(v => v.pause());
     }
     
     function resumeStory() {
       isPaused = false;
-      pauseIndicator.classList.remove('visible');
       document.querySelectorAll('#storySlides video').forEach(v => v.play().catch(()=>{}));
     }
 
@@ -1132,11 +1135,8 @@
     window.openBooking = function() { document.getElementById('bookingOverlay').classList.add('open'); document.body.style.overflow = 'hidden'; };
     window.closeBooking = function() { document.getElementById('bookingOverlay').classList.remove('open'); document.body.style.overflow = ''; };
 
-    window.openSchedule = function() {
-      // Упрощенное расписание для экономии места
-      document.getElementById('scheduleOverlay').classList.add('open');
-    };
-    window.closeSchedule = function() { document.getElementById('scheduleOverlay').classList.remove('open'); };
+    window.openSchedule = function() { alert('Работаем с 12:00 до 00:00'); };
+    window.closeSchedule = function() {};
 
     // Валидация
     document.getElementById('phoneInput')?.addEventListener('input', (e) => {
