@@ -229,7 +229,6 @@
       filter: hue-rotate(70deg) saturate(0.85) brightness(0.9); z-index: 0;
     }
     
-    /* Плавный переход снизу */
     .hero-desktop::before {
       content: '';
       position: absolute;
@@ -318,7 +317,6 @@
       z-index: 1;
     }
     
-    /* Светящееся пятно слева */
     section.block::before {
       content: '';
       position: absolute;
@@ -333,7 +331,6 @@
       animation: floatBlob 10s infinite alternate ease-in-out;
     }
 
-    /* Светящееся пятно справа */
     section.block::after {
       content: '';
       position: absolute;
@@ -652,6 +649,7 @@
       position: relative; overflow: hidden;
       animation: fadeRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
       border: 1px solid rgba(62, 165, 106, 0.08);
+      cursor: pointer;
     }
     .dish-card:hover { transform: translateY(-4px); background: rgba(255, 255, 255, 0.085); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(62, 165, 106, 0.18); }
 
@@ -665,6 +663,7 @@
 
     .dish-name { font-size: 19px; font-weight: 500; letter-spacing: -0.01em; }
     .dish-desc { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+    .dish-weight { font-size: 12px; color: var(--muted); margin-top: 4px; }
     .dish-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 10px; }
     .dish-price { font-size: 22px; font-weight: 500; letter-spacing: -0.01em; }
     .dish-price .cur { font-size: 15px; color: var(--muted); }
@@ -765,15 +764,14 @@
     .checkout-btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
 
     /* ---------- МОДАЛКИ (общие) ---------- */
-    .booking-overlay, .schedule-overlay, .login-overlay, .phone-overlay, .legal-overlay, .profile-overlay {
+    .booking-overlay, .schedule-overlay, .login-overlay, .phone-overlay, .legal-overlay, .profile-overlay, .dish-modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(10px);
       z-index: 400; opacity: 0; pointer-events: none; transition: opacity 0.3s;
       display: flex; align-items: center; justify-content: center; padding: 20px;
     }
-    .booking-overlay.open, .schedule-overlay.open, .login-overlay.open, .phone-overlay.open, .legal-overlay.open, .profile-overlay.open { opacity: 1; pointer-events: auto; }
+    .booking-overlay.open, .schedule-overlay.open, .login-overlay.open, .phone-overlay.open, .legal-overlay.open, .profile-overlay.open, .dish-modal-overlay.open { opacity: 1; pointer-events: auto; }
 
-    /* Скрываем скроллбар модалки, чтобы не было стрелок сбоку */
-    .booking-modal, .login-modal, .phone-modal, .legal-modal, .schedule-modal, .profile-modal {
+    .booking-modal, .login-modal, .phone-modal, .legal-modal, .schedule-modal, .profile-modal, .dish-modal {
       background: #0d1f15; border: 1px solid rgba(62, 165, 106, 0.2); border-radius: 32px;
       width: 100%; max-width: 480px; padding: 40px; position: relative;
       box-shadow: 0 20px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.03);
@@ -781,19 +779,20 @@
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       max-height: 90vh; 
       overflow-y: auto;
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
-    /* Скрываем скроллбар WebKit (Chrome, Safari) */
     .booking-modal::-webkit-scrollbar, .login-modal::-webkit-scrollbar, 
     .phone-modal::-webkit-scrollbar, .legal-modal::-webkit-scrollbar, 
-    .schedule-modal::-webkit-scrollbar, .profile-modal::-webkit-scrollbar { 
+    .schedule-modal::-webkit-scrollbar, .profile-modal::-webkit-scrollbar,
+    .dish-modal::-webkit-scrollbar { 
       display: none; 
     }
 
     .booking-overlay.open .booking-modal, .login-overlay.open .login-modal,
     .phone-overlay.open .phone-modal, .legal-overlay.open .legal-modal,
-    .schedule-overlay.open .schedule-modal, .profile-overlay.open .profile-modal { transform: scale(1) translateY(0); }
+    .schedule-overlay.open .schedule-modal, .profile-overlay.open .profile-modal,
+    .dish-modal-overlay.open .dish-modal { transform: scale(1) translateY(0); }
 
     .booking-close, .login-close, .phone-close, .schedule-close, .profile-close {
       position: absolute; top: 20px; right: 20px; width: 40px; height: 40px;
@@ -823,7 +822,6 @@
       font-family: inherit; outline: none; transition: all 0.3s;
     }
     
-    /* Убираем стрелочки у инпутов */
     .custom-input { 
       width: 100%; 
       background: rgba(255,255,255,0.03); 
@@ -1066,7 +1064,7 @@
       .cat-chip.active { background: var(--green-soft); color: var(--green-light); border-color: rgba(62, 165, 106, 0.4); box-shadow: 0 0 16px rgba(62, 165, 106, 0.15); }
 
       .menu-list-mobile { padding: 20px 20px 20px; display: flex; flex-direction: column; gap: 12px; }
-      .dish-row { background: var(--card); border-radius: var(--radius-card); padding: 14px; display: flex; gap: 14px; align-items: center; animation: fadeRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; border: 1px solid rgba(62, 165, 106, 0.06); }
+      .dish-row { background: var(--card); border-radius: var(--radius-card); padding: 14px; display: flex; gap: 14px; align-items: center; animation: fadeRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; border: 1px solid rgba(62, 165, 106, 0.06); cursor: pointer; }
       .dish-row-img { width: 84px; height: 84px; border-radius: 18px; background: linear-gradient(135deg, #123322, #08160e); display: flex; align-items: center; justify-content: center; font-size: 42px; flex-shrink: 0; overflow: hidden; }
       .dish-row-img img { width: 100%; height: 100%; object-fit: cover; }
       .dish-row-info { flex: 1; min-width: 0; }
@@ -1414,7 +1412,7 @@
 
   <!-- ================= STORY VIEWER ================= -->
   <div class="story-viewer" id="storyViewer" onclick="if(event.target === this) closeStory()">
-    <div class="story-viewer-inner">
+    <div class="story-viewer-inner" id="storyViewerInner">
       <div class="story-progress" id="storyProgress"></div>
       <button class="story-close" onclick="closeStory()" aria-label="Закрыть">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -1447,6 +1445,53 @@
         <button class="story-book-btn" id="storyBookBtn">
           Забронировать на эту дату
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= МОДАЛКА БЛЮДА ================= -->
+  <div class="dish-modal-overlay" id="dishModalOverlay" onclick="if(event.target === this) closeDishModal()">
+    <div class="dish-modal">
+      <button class="close-btn" onclick="closeDishModal()" aria-label="Закрыть">✕</button>
+      <div class="dish-modal-img"><img id="dmImg" src="" alt=""></div>
+      <div class="dish-modal-content">
+        <div class="dish-modal-header">
+          <div>
+            <div class="dish-modal-title" id="dmTitle"></div>
+            <div class="dish-modal-weight" id="dmWeight"></div>
+          </div>
+          <div class="dish-modal-price" id="dmPrice"></div>
+        </div>
+        <div class="dish-modal-desc" id="dmDesc"></div>
+        <div class="dish-modal-compound" id="dmCompound"></div>
+        
+        <div class="kbju-block">
+          <div class="kbju-header">
+            <div class="kbju-toggle">
+              <button class="active" onclick="toggleKbju('portion', this)">На порцию</button>
+              <button onclick="toggleKbju('100g', this)">На 100 г</button>
+            </div>
+          </div>
+          <div class="kbju-grid">
+            <div class="kbju-item"><div class="val" id="kbjuCal">0</div><div class="lbl">Ккал</div></div>
+            <div class="kbju-item"><div class="val" id="kbjuProt">0</div><div class="lbl">Белки</div></div>
+            <div class="kbju-item"><div class="val" id="kbjuFat">0</div><div class="lbl">Жиры</div></div>
+            <div class="kbju-item"><div class="val" id="kbjuCarb">0</div><div class="lbl">Углеводы</div></div>
+          </div>
+        </div>
+
+        <div class="addons-section">
+          <h4>Добавить к блюду</h4>
+          <div id="dmAddons"></div>
+        </div>
+      </div>
+      <div class="dish-modal-footer">
+        <div class="qty-selector">
+          <button onclick="changeModalQty(-1)">−</button>
+          <span id="dmQty">1</span>
+          <button onclick="changeModalQty(1)">+</button>
+        </div>
+        <button class="glass pill primary" onclick="addFromModal()">Добавить в корзину</button>
       </div>
     </div>
   </div>
@@ -1682,371 +1727,275 @@
   <script type="module">
     // ============ МЕНЮ ============
     const menu = [
-      { id: 1, name: 'Скрембл/Глазунья/Омлет', desc: 'Лосось слабосоленый, авокадо, черри, подсушенная чиабата, лист салата', price: 650, image: 'public/images/dishes/scrembl.jpg', tag: null, cat: 'later' },
-      { id: 2, name: 'Дранники с лососем', desc: 'Дранники с картофелем и цукини, слабосоленный лосось, крем чиз', price: 750, emoji: '🥩', tag: null, cat: 'later' },
-      { id: 3, name: 'Трио золотистых блинов с креветками', desc: 'Блины с креветками и спелым авокадо и творожным сыром', price: 550, emoji: '🍝', tag: null, cat: 'later' },
-      { id: 4, name: 'Блины с лососем', desc: 'блины со слабосоленным лососем и мягким творожным сыром', price: 650, emoji: '🥗', tag: null, cat: 'later' },
+      { 
+        id: 1, name: 'Скрембл/Глазунья/Омлет', desc: 'Лосось слабосоленый, авокадо, черри, подсушенная чиабата, лист салата', 
+        weight: 320, price: 650, image: 'public/images/dishes/scrembl.jpg', tag: 'hit', cat: 'later',
+        compound: 'Яйца, сливки, лосось, авокадо, томаты черри, хлеб чиабата, масло сливочное, соль, перец.',
+        kbju: { cal: 520, prot: 28, fat: 32, carb: 30 },
+        addons: [
+          { name: 'Дополнительный лосось', price: 150 },
+          { name: 'Сыр Чеддер', price: 60 },
+          { name: 'Авокадо', price: 90 }
+        ]
+      },
+      { 
+        id: 2, name: 'Дранники с лососем', desc: 'Дранники с картофелем и цукини, слабосоленный лосось, крем чиз', 
+        weight: 280, price: 750, image: null, emoji: '🥩', tag: null, cat: 'later',
+        compound: 'Картофель, цукини, яйца, мука, лосось, крем-чиз, зелень, масло растительное.',
+        kbju: { cal: 480, prot: 22, fat: 26, carb: 38 },
+        addons: [
+          { name: 'Сметана', price: 50 },
+          { name: 'Икра красная', price: 200 }
+        ]
+      },
+      { 
+        id: 3, name: 'Трио золотистых блинов с креветками', desc: 'Блины с креветками и спелым авокадо и творожным сыром', 
+        weight: 250, price: 550, image: null, emoji: '🍝', tag: 'new', cat: 'later',
+        compound: 'Мука, молоко, яйца, креветки, авокадо, творожный сыр, соус.',
+        kbju: { cal: 410, prot: 24, fat: 18, carb: 36 },
+        addons: [
+          { name: 'Дополнительные креветки', price: 120 },
+          { name: 'Соус Спайси', price: 40 }
+        ]
+      },
+      { 
+        id: 4, name: 'Блины с лососем', desc: 'Блины со слабосоленным лососем и мягким творожным сыром', 
+        weight: 220, price: 650, image: null, emoji: '🥗', tag: null, cat: 'later',
+        compound: 'Мука, молоко, яйца, лосось, творожный сыр, зелень.',
+        kbju: { cal: 380, prot: 20, fat: 16, carb: 34 },
+        addons: [
+          { name: 'Сливки', price: 50 },
+          { name: 'Лимон', price: 20 }
+        ]
+      },
     ];
 
-    const categories = [
-      { id: 'all', label: 'Всё' },
-      { id: 'hit', label: '🔥 Хиты' },
-      { id: 'later', label: 'Поздние завтраки (до 16:00)' },
-      { id: 'salad', label: 'Салаты' },
-      { id: 'cold', label: 'Что-то особенное' },
-      { id: 'hot', label: 'Горячие закуски' },
-      { id: 'soup', label: 'Супы' },
-      { id: 'main', label: 'Горячее блюдо' },
-      { id: 'pasta', label: 'Пасты' },
-      { id: 'dessert', label: 'Десерты' },
-      { id: 'garnish', label: 'Гарниры' },
-      { id: 'sause', label: 'Соусы' },
-      { id: 'drink', label: 'Напитки' },
-    ];
-
-    // ============ СОБЫТИЯ (STORIES) ============
     const events = [
-      {
-        id: 1,
-        tag: 'Танцевальный вечер',
-        title: 'DJ INNOXI',
-        desc: 'Погрузитесь в атмосферу тёплого вечера.',
-        date: '2026-10-29',
-        time: '20:00 – 02:00',
-        emoji: '🎷',
-        media: [
-          { type: 'video', src: 'public/video/DJ INNOXI.MP4', poster: 'public/video/DJ INNOXI.jpg'},
-        ]
-      },
-      {
-        id: 2,
-        tag: 'Танцевальный вечер',
-        title: 'DJ MISHA GODA',
-        desc: 'Узнайте секреты сочетания вкусов.',
-        date: '2026-10-31',
-        time: '20:00 – 02:00',
-        emoji: '🍷',
-        media: [
-          { type: 'video', src: 'public/video/misha.MP4', poster: 'public/video/misha.jpg'},
-        ]
-      },
-      {
-        id: 3,
-        tag: '18,19,26 ДЕКАБРЯ',
-        title: 'НОВЫЙ ГОД',
-        desc: 'Отличный повод собраться с друзьями.',
-        date: '2026-12-18',
-        time: '20:00 – 02:00',
-        emoji: '🥂',
-        media: [
-          { type: 'image', src: 'public/images/NG.jpg' },
-        ]
-      },
-      {
-        id: 4,
-        tag: 'ПО БУДНЯМ',
-        title: '-20% МЕНЮ',
-        desc: 'С 12:00 ДО 16:00 по будням, скидка -20% на Основное меню',
-        date: '2026-10-28',
-        time: '12:00 - 16:00',
-        emoji: '',
-        media: [
-          { type: 'image', src: 'public/images/-20.jpg' },
-        ]
-      },
+      { id: 1, tag: 'Танцевальный вечер', title: 'DJ INNOXI', desc: 'Погрузитесь в атмосферу тёплого вечера.', date: '2026-10-29', time: '20:00 – 02:00', media: [{ type: 'video', src: 'public/video/DJ INNOXI.MP4', poster: 'public/video/DJ INNOXI.jpg'}] },
+      { id: 2, tag: 'Танцевальный вечер', title: 'DJ MISHA GODA', desc: 'Узнайте секреты сочетания вкусов.', date: '2026-10-31', time: '20:00 – 02:00', media: [{ type: 'video', src: 'public/video/misha.MP4', poster: 'public/video/misha.jpg'}] },
+      { id: 3, tag: '18,19,26 ДЕКАБРЯ', title: 'НОВЫЙ ГОД', desc: 'Отличный повод собраться с друзьями.', date: '2026-12-18', time: '20:00 – 02:00', media: [{ type: 'image', src: 'public/images/NG.jpg' }] },
+      { id: 4, tag: 'ПО БУДНЯМ', title: '-20% МЕНЮ', desc: 'С 12:00 ДО 16:00 по будням, скидка -20% на Основное меню', date: '2026-10-28', time: '12:00 - 16:00', media: [{ type: 'image', src: 'public/images/-20.jpg' }] },
     ];
 
-    // ============ CART STATE ============
     let cart = [];
-    const DELIVERY_FEE = 149;
-    const FREE_DELIVERY_FROM = 1500;
+    let currentUser = null;
+    let currentRequestId = null;
+    let currentPhoneForAuth = '';
+    let currentModalDish = null;
+    let currentModalQty = 1;
+    let currentKbjuMode = 'portion';
 
-    function tagLabel(tag) {
-      return { hit: 'Хит', new: 'Новинка', veg: 'Веган' }[tag] || '';
-    }
-
-    // ============ RENDER DESKTOP MENU ============
+    // ============ RENDER ============
     const menuGrid = document.getElementById('menuGrid');
     if (menuGrid) {
-      menuGrid.innerHTML = menu.map((dish, i) => `
-        <div class="dish-card" style="animation-delay:${0.05 + i * 0.05}s">
-          ${dish.tag ? `<span class="dish-tag ${dish.tag}">${tagLabel(dish.tag)}</span>` : ''}
+      menuGrid.innerHTML = menu.map(dish => `
+        <div class="dish-card" onclick="openDishModal(${dish.id})">
+          ${dish.tag ? `<span class="dish-tag ${dish.tag}">${dish.tag === 'hit' ? 'Хит' : 'Новинка'}</span>` : ''}
           <div class="dish-img">${dish.image ? `<img src="${dish.image}" alt="${dish.name}" loading="lazy">` : (dish.emoji || '🍽')}</div>
           <div>
             <div class="dish-name">${dish.name}</div>
             <div class="dish-desc">${dish.desc}</div>
+            <div class="dish-weight">${dish.weight} г</div>
           </div>
           <div class="dish-bottom">
             <div class="dish-price">${dish.price} <span class="cur">₽</span></div>
-            <button class="add-btn" onclick="addToCart(${dish.id})" aria-label="Добавить">+</button>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart(${dish.id})">+</button>
           </div>
         </div>
       `).join('');
     }
 
-    // ============ RENDER STORIES ============
-    function formatDate(dateStr) {
-      const d = new Date(dateStr);
-      const months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
-      return `${d.getDate()} ${months[d.getMonth()]}`;
-    }
-
-    function renderStories(containerId, isMobile = false) {
-      const container = document.getElementById(containerId);
+    function renderStories(id) {
+      const container = document.getElementById(id);
       if (!container) return;
       container.innerHTML = events.map((ev, i) => {
-        const firstMedia = ev.media[0];
-        const thumbContent = firstMedia.type === 'image'
-          ? `<img src="${firstMedia.src}" alt="${ev.title}" loading="lazy">`
-          : (firstMedia.poster ? `<img src="${firstMedia.poster}" alt="${ev.title}" loading="lazy">` : ev.emoji);
+        const m = ev.media[0];
+        const thumb = m.type === 'image' ? `<img src="${m.src}">` : (m.poster ? `<img src="${m.poster}">` : '🎬');
         return `
           <div class="story-item" onclick="openStory(${i})">
-            <div class="story-ring">
-              <div class="story-thumb">${thumbContent}</div>
-            </div>
+            <div class="story-ring"><div class="story-thumb">${thumb}</div></div>
             <div class="story-label">${ev.title}</div>
-            <div class="story-date-mini">${formatDate(ev.date)} · ${ev.time.split('–')[0].trim()}</div>
+            <div class="story-date-mini">${ev.date.split('-').reverse().slice(0,2).join('.')}</div>
           </div>
         `;
       }).join('');
     }
-    renderStories('storiesGrid', false);
-    renderStories('storiesGridMobile', true);
+    renderStories('storiesGrid');
+    renderStories('storiesGridMobile');
 
-    // ============ STORY VIEWER ============
-    let currentStoryIndex = -1;
-    let currentSlideIndex = 0;
-    let slideTimer = null;
-    let storyDuration = 5000;
-    let progressStartTime = 0;
-    let progressElapsed = 0;
-    let progressRaf = null;
-
-    window.openStory = function(index) {
-      currentStoryIndex = index;
-      currentSlideIndex = 0;
-      const ev = events[index];
-      const viewer = document.getElementById('storyViewer');
-      const slides = document.getElementById('storySlides');
-      const progress = document.getElementById('storyProgress');
-
-      document.getElementById('storyTag').textContent = ev.tag;
-      document.getElementById('storyTitle').textContent = ev.title;
-      document.getElementById('storyDesc').textContent = ev.desc;
-      document.getElementById('storyDateText').textContent = ev.date.split('-').reverse().join('.');
-      document.getElementById('storyTimeText').textContent = ev.time;
-
-      const bookBtn = document.getElementById('storyBookBtn');
-      bookBtn.onclick = () => {
-        const date = ev.date;
-        closeStory();
-        openBooking(date);
-      };
-
-      progress.innerHTML = ev.media.map((_, i) =>
-        `<div class="story-progress-seg"><div class="story-progress-fill" data-idx="${i}"></div></div>`
-      ).join('');
-
-      slides.innerHTML = ev.media.map((m, i) => {
-        if (m.type === 'image') {
-          return `<div class="story-slide ${i === 0 ? 'active' : ''}" data-idx="${i}">
-            <img src="${m.src}" alt="slide ${i+1}">
-          </div>`;
-        } else {
-          return `<div class="story-slide ${i === 0 ? 'active' : ''}" data-idx="${i}">
-            <video src="${m.src}" ${m.poster ? `poster="${m.poster}"` : ''} muted playsinline autoplay loop></video>
-          </div>`;
-        }
-      }).join('');
-
-      const navs = viewer.querySelectorAll('.story-nav');
-      navs.forEach(n => n.style.display = ev.media.length > 1 ? 'flex' : 'none');
-
-      viewer.classList.add('open');
-      document.body.style.overflow = 'hidden';
-
-      startSlideProgress();
-    };
-
-    function startSlideProgress() {
-      stopSlideProgress();
-      const ev = events[currentStoryIndex];
-      const slide = ev.media[currentSlideIndex];
-      const progressFill = document.querySelector(`.story-progress-fill[data-idx="${currentSlideIndex}"]`);
-
-      document.querySelectorAll('.story-progress-fill').forEach((el, i) => {
-        if (i < currentSlideIndex) el.style.width = '100%';
-        else if (i === currentSlideIndex) el.style.width = '0%';
-        else el.style.width = '0%';
-      });
-
-      const duration = slide.type === 'video' ? 8000 : 5000;
-      progressStartTime = performance.now();
-      progressElapsed = 0;
-
-      function tick(now) {
-        const elapsed = now - progressStartTime;
-        const pct = Math.min(100, (elapsed / duration) * 100);
-        if (progressFill) progressFill.style.width = pct + '%';
-
-        if (elapsed >= duration) {
-          stopSlideProgress();
-          nextSlide();
-          return;
-        }
-        progressRaf = requestAnimationFrame(tick);
-      }
-      progressRaf = requestAnimationFrame(tick);
-    }
-
-    function stopSlideProgress() {
-      if (progressRaf) {
-        cancelAnimationFrame(progressRaf);
-        progressRaf = null;
-      }
-    }
-
-    window.closeStory = function() {
-      stopSlideProgress();
-      document.getElementById('storyViewer').classList.remove('open');
-      document.body.style.overflow = '';
-      document.querySelectorAll('#storySlides video').forEach(v => v.pause());
-    };
-
-    window.nextSlide = function() {
-      const ev = events[currentStoryIndex];
-      if (currentSlideIndex < ev.media.length - 1) {
-        currentSlideIndex++;
-        switchSlide();
-      } else {
-        if (currentStoryIndex < events.length - 1) {
-          openStory(currentStoryIndex + 1);
-        } else {
-          closeStory();
-        }
-      }
-    };
-
-    window.prevSlide = function() {
-      if (currentSlideIndex > 0) {
-        currentSlideIndex--;
-        switchSlide();
-      }
-    };
-
-    function switchSlide() {
-      const slides = document.querySelectorAll('#storySlides .story-slide');
-      slides.forEach((s, i) => {
-        s.classList.toggle('active', i === currentSlideIndex);
-        if (s.tagName === 'DIV') {
-          const vid = s.querySelector('video');
-          if (vid) {
-            if (i === currentSlideIndex) vid.play().catch(() => {});
-            else vid.pause();
-          }
-        }
-      });
-      startSlideProgress();
-    }
-
-    // ============ RENDER MOBILE CATEGORIES ============
-    const catScroll = document.getElementById('catScroll');
-    if (catScroll) {
-      catScroll.innerHTML = categories.map((c, i) =>
-        `<button class="cat-chip ${i === 0 ? 'active' : ''}" data-cat="${c.id}" onclick="filterMobile('${c.id}', this)">${c.label}</button>`
-      ).join('');
-    }
-
-    function renderMobileMenu(filter = 'all') {
+    function renderMobileMenu() {
       const list = document.getElementById('mobileMenuList');
       if (!list) return;
-      let items = menu;
-      if (filter === 'hit') items = menu.filter(d => d.tag === 'hit');
-      else if (filter !== 'all') items = menu.filter(d => d.cat === filter);
-
-      list.innerHTML = items.map((dish, i) => `
-        <div class="dish-row" style="animation-delay:${i * 0.05}s">
-          <div class="dish-row-img">${dish.image ? `<img src="${dish.image}" alt="${dish.name}" loading="lazy">` : (dish.emoji || '🍽')}</div>
+      list.innerHTML = menu.map(dish => `
+        <div class="dish-row" onclick="openDishModal(${dish.id})">
+          <div class="dish-row-img">${dish.image ? `<img src="${dish.image}">` : (dish.emoji || '🍽')}</div>
           <div class="dish-row-info">
             <div class="dish-row-name">${dish.name}</div>
             <div class="dish-row-desc">${dish.desc}</div>
             <div class="dish-row-bottom">
               <div class="dish-row-price">${dish.price} ₽</div>
-              <button class="add-btn-sm" onclick="addToCart(${dish.id})" aria-label="Добавить">+</button>
+              <button class="add-btn-sm" onclick="event.stopPropagation(); addToCart(${dish.id})">+</button>
             </div>
           </div>
         </div>
       `).join('');
     }
-
-    window.filterMobile = function(cat, btn) {
-      document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      renderMobileMenu(cat);
-    };
     renderMobileMenu();
 
-    // ============ CART LOGIC ============
-    window.addToCart = function(id) {
+    // ============ DISH MODAL ============
+    window.openDishModal = function(id) {
       const dish = menu.find(d => d.id === id);
       if (!dish) return;
-      const existing = cart.find(i => i.id === id);
-      if (existing) existing.qty++;
-      else cart.push({ ...dish, qty: 1 });
+      currentModalDish = dish;
+      currentModalQty = 1;
+      currentKbjuMode = 'portion';
+
+      document.getElementById('dmImg').src = dish.image || 'https://via.placeholder.com/500x300/123322/3ea56a?text=' + dish.emoji;
+      document.getElementById('dmTitle').textContent = dish.name;
+      document.getElementById('dmWeight').textContent = `${dish.weight} г`;
+      document.getElementById('dmPrice').textContent = `${dish.price} ₽`;
+      document.getElementById('dmDesc').textContent = dish.desc;
+      document.getElementById('dmCompound').innerHTML = `<strong>Состав:</strong> ${dish.compound}`;
+      document.getElementById('dmQty').textContent = currentModalQty;
+      
+      document.querySelectorAll('.kbju-toggle button')[0].classList.add('active');
+      document.querySelectorAll('.kbju-toggle button')[1].classList.remove('active');
+      updateKbjuDisplay();
+
+      const addonsEl = document.getElementById('dmAddons');
+      if (dish.addons && dish.addons.length) {
+        addonsEl.innerHTML = dish.addons.map((a, i) => `
+          <div class="addon-item" onclick="toggleAddon(this)" data-price="${a.price}">
+            <div class="addon-left">
+              <div class="addon-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+              <span class="addon-name">${a.name}</span>
+            </div>
+            <span class="addon-price">+${a.price} ₽</span>
+          </div>
+        `).join('');
+      } else {
+        addonsEl.innerHTML = '<div style="color: var(--muted); font-size: 14px;">Нет доступных дополнений</div>';
+      }
+
+      document.getElementById('dishModalOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeDishModal = function() {
+      document.getElementById('dishModalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    };
+
+    window.toggleKbju = function(mode, btn) {
+      currentKbjuMode = mode;
+      document.querySelectorAll('.kbju-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updateKbjuDisplay();
+    };
+
+    function updateKbjuDisplay() {
+      if (!currentModalDish) return;
+      const { cal, prot, fat, carb } = currentModalDish.kbju;
+      if (currentKbjuMode === 'portion') {
+        document.getElementById('kbjuCal').textContent = cal;
+        document.getElementById('kbjuProt').textContent = prot;
+        document.getElementById('kbjuFat').textContent = fat;
+        document.getElementById('kbjuCarb').textContent = carb;
+      } else {
+        const w = currentModalDish.weight / 100;
+        document.getElementById('kbjuCal').textContent = Math.round(cal / w);
+        document.getElementById('kbjuProt').textContent = (prot / w).toFixed(1);
+        document.getElementById('kbjuFat').textContent = (fat / w).toFixed(1);
+        document.getElementById('kbjuCarb').textContent = (carb / w).toFixed(1);
+      }
+    }
+
+    window.toggleAddon = function(el) {
+      el.classList.toggle('selected');
+    };
+
+    window.changeModalQty = function(delta) {
+      currentModalQty = Math.max(1, currentModalQty + delta);
+      document.getElementById('dmQty').textContent = currentModalQty;
+    };
+
+    window.addFromModal = function() {
+      if (!currentModalDish) return;
+      const addons = [];
+      document.querySelectorAll('.addon-item.selected').forEach(el => {
+        addons.push({
+          name: el.querySelector('.addon-name').textContent,
+          price: parseInt(el.dataset.price)
+        });
+      });
+      addToCart(currentModalDish.id, currentModalQty, addons);
+      closeDishModal();
+    };
+
+    // ============ CART LOGIC ============
+    window.addToCart = function(id, qty = 1, addons = []) {
+      const dish = menu.find(d => d.id === id);
+      if (!dish) return;
+      
+      const addonPrice = addons.reduce((s, a) => s + a.price, 0);
+      const itemPrice = dish.price + addonPrice;
+      
+      const cartItemId = id + '_' + addons.map(a => a.name).join('_');
+      const existing = cart.find(i => i.cartItemId === cartItemId);
+      
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({ ...dish, cartItemId, price: itemPrice, qty, selectedAddons: addons });
+      }
       updateCart();
       showToast(`✓ ${dish.name} добавлено`);
     };
-    window.changeQty = function(id, delta) {
-      const item = cart.find(i => i.id === id);
+
+    window.changeQty = function(cartItemId, delta) {
+      const item = cart.find(i => i.cartItemId === cartItemId);
       if (!item) return;
       item.qty += delta;
-      if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+      if (item.qty <= 0) cart = cart.filter(i => i.cartItemId !== cartItemId);
       updateCart();
     };
 
     function updateCart() {
       const count = cart.reduce((s, i) => s + i.qty, 0);
-      const badge = document.getElementById('cartBadge');
-      if (badge) badge.textContent = count;
-      const mobileBadge = document.getElementById('cartBadgeMobile');
-      if (mobileBadge) mobileBadge.textContent = count;
+      document.getElementById('cartBadge').textContent = count;
+      if (document.getElementById('cartBadgeMobile')) document.getElementById('cartBadgeMobile').textContent = count;
 
       const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-      const delivery = subtotal === 0 ? 0 : (subtotal >= FREE_DELIVERY_FROM ? 0 : DELIVERY_FEE);
+      const delivery = subtotal === 0 ? 0 : (subtotal >= 1500 ? 0 : 149);
       const total = subtotal + delivery;
 
       const mobileTotal = document.getElementById('mobileCartTotal');
       if (mobileTotal) mobileTotal.textContent = total > 0 ? `${total} ₽` : '';
 
       const itemsEl = document.getElementById('cartItems');
-      if (itemsEl) {
-        if (cart.length === 0) {
-          itemsEl.innerHTML = `<div class="cart-empty"><div class="big">🛒</div><div>Корзина пуста</div><div style="font-size:13px;margin-top:8px;">Добавьте блюда из меню</div></div>`;
-        } else {
-          itemsEl.innerHTML = cart.map(item => `
-            <div class="cart-item">
-              <div class="cart-item-img">${item.image ? `<img src="${item.image}" alt="${item.name}" loading="lazy">` : (item.emoji || '🍽')}</div>
-              <div class="cart-item-info">
-                <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-price">${item.price} ₽</div>
-              </div>
-              <div class="qty-control">
-                <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
-                <span class="qty-num">${item.qty}</span>
-                <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
-              </div>
+      if (cart.length === 0) {
+        itemsEl.innerHTML = `<div class="cart-empty"><div class="big">🛒</div><div>Корзина пуста</div></div>`;
+      } else {
+        itemsEl.innerHTML = cart.map(item => `
+          <div class="cart-item">
+            <div class="cart-item-img">${item.image ? `<img src="${item.image}">` : (item.emoji || '🍽')}</div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              ${item.selectedAddons.length ? `<div style="font-size: 11px; color: var(--green-light);">+ ${item.selectedAddons.map(a => a.name).join(', ')}</div>` : ''}
+              <div class="cart-item-price">${item.price} ₽</div>
             </div>
-          `).join('');
-        }
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty('${item.cartItemId}', -1)">−</button>
+              <span class="qty-num">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty('${item.cartItemId}', 1)">+</button>
+            </div>
+          </div>
+        `).join('');
       }
 
-      const deliveryEl = document.getElementById('deliveryCost');
-      if (deliveryEl) deliveryEl.textContent = delivery === 0 ? 'Бесплатно' : `${delivery} ₽`;
-      const totalEl = document.getElementById('cartTotal');
-      if (totalEl) totalEl.textContent = `${total} ₽`;
-
-      const checkout = document.getElementById('checkoutBtn');
-      if (checkout) checkout.disabled = cart.length === 0;
+      document.getElementById('deliveryCost').textContent = delivery === 0 ? 'Бесплатно' : `${delivery} ₽`;
+      document.getElementById('cartTotal').textContent = `${total} ₽`;
+      document.getElementById('checkoutBtn').disabled = cart.length === 0;
     }
 
     window.openCart = function() {
@@ -2060,643 +2009,311 @@
       document.body.style.overflow = '';
     };
 
-    // ============ БОКОВОЕ МЕНЮ ============
-    window.openSideMenu = function() {
-      document.getElementById('sideMenuOverlay').classList.add('open');
-      document.getElementById('sideMenu').classList.add('open');
+    // ============ STORY VIEWER ============
+    let currentStoryIndex = -1;
+    let currentSlideIndex = 0;
+    let progressRaf = null;
+    let progressStartTime = 0;
+    let progressElapsed = 0;
+    let isPaused = false;
+    let storyDuration = 5000;
+
+    window.openStory = function(index) {
+      currentStoryIndex = index;
+      currentSlideIndex = 0;
+      const ev = events[index];
+      const viewer = document.getElementById('storyViewer');
+      
+      document.getElementById('storyTag').textContent = ev.tag;
+      document.getElementById('storyTitle').textContent = ev.title;
+      document.getElementById('storyDesc').textContent = ev.desc;
+      
+      document.getElementById('storyBookBtn').onclick = () => { closeStory(); openBooking(ev.date); };
+
+      document.getElementById('storyProgress').innerHTML = ev.media.map((_, i) => 
+        `<div class="story-progress-seg"><div class="story-progress-fill" data-idx="${i}"></div></div>`
+      ).join('');
+
+      document.getElementById('storySlides').innerHTML = ev.media.map((m, i) => {
+        if (m.type === 'image') {
+          return `<div class="story-slide ${i === 0 ? 'active' : ''}" data-idx="${i}"><img src="${m.src}"></div>`;
+        }
+        return `<div class="story-slide ${i === 0 ? 'active' : ''}" data-idx="${i}"><video src="${m.src}" ${m.poster ? `poster="${m.poster}"` : ''} muted playsinline autoplay loop></video></div>`;
+      }).join('');
+
+      viewer.classList.add('open');
       document.body.style.overflow = 'hidden';
+      
+      startSlideProgress();
     };
-    window.closeSideMenu = function() {
-      document.getElementById('sideMenuOverlay').classList.remove('open');
-      document.getElementById('sideMenu').classList.remove('open');
+
+    function startSlideProgress() {
+      stopSlideProgress();
+      const ev = events[currentStoryIndex];
+      const slide = ev.media[currentSlideIndex];
+      const progressFill = document.querySelector(`.story-progress-fill[data-idx="${currentSlideIndex}"]`);
+      
+      document.querySelectorAll('.story-progress-fill').forEach((el, i) => {
+        el.style.width = i < currentSlideIndex ? '100%' : '0%';
+      });
+
+      if (slide.type === 'video') {
+        const vid = document.querySelector(`.story-slide[data-idx="${currentSlideIndex}"] video`);
+        if (vid) {
+          vid.currentTime = 0;
+          vid.play().catch(()=>{});
+          storyDuration = vid.duration ? vid.duration * 1000 : 10000;
+        }
+      } else {
+        storyDuration = 5000;
+      }
+
+      progressStartTime = performance.now() - progressElapsed;
+
+      function tick(now) {
+        if (!isPaused) {
+          progressElapsed = now - progressStartTime;
+          const pct = Math.min(100, (progressElapsed / storyDuration) * 100);
+          if (progressFill) progressFill.style.width = pct + '%';
+          
+          if (progressElapsed >= storyDuration) {
+            stopSlideProgress();
+            nextSlide();
+            return;
+          }
+        } else {
+          progressStartTime = now - progressElapsed; 
+        }
+        progressRaf = requestAnimationFrame(tick);
+      }
+      progressRaf = requestAnimationFrame(tick);
+    }
+
+    function stopSlideProgress() {
+      if (progressRaf) cancelAnimationFrame(progressRaf);
+      progressRaf = null;
+    }
+
+    window.closeStory = function() {
+      stopSlideProgress();
+      document.getElementById('storyViewer').classList.remove('open');
       document.body.style.overflow = '';
+      document.querySelectorAll('#storySlides video').forEach(v => v.pause());
+      isPaused = false;
     };
 
-    // ============ БРОНИРОВАНИЕ ============
-    window.openBooking = function(eventDate = null) {
-      document.getElementById('bookingOverlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
-
-      const dateInput = document.getElementById('bdate');
-      if (eventDate) {
-        const [y, m, d] = eventDate.split('-');
-        dateInput.value = `${d}.${m}.${y}`;
-        selectedCalDate = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-        currentCalDate = new Date(parseInt(y), parseInt(m) - 1, 1);
-      } else if (!dateInput.value) {
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, '0');
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const year = today.getFullYear();
-        dateInput.value = `${day}.${month}.${year}`;
+    window.nextSlide = function() {
+      progressElapsed = 0;
+      const ev = events[currentStoryIndex];
+      if (currentSlideIndex < ev.media.length - 1) {
+        document.querySelectorAll('.story-slide').forEach(s => s.classList.remove('active'));
+        currentSlideIndex++;
+        document.querySelector(`.story-slide[data-idx="${currentSlideIndex}"]`).classList.add('active');
+        document.querySelectorAll('#storySlides video').forEach(v => v.pause());
+        startSlideProgress();
+      } else if (currentStoryIndex < events.length - 1) {
+        openStory(currentStoryIndex + 1);
+      } else {
+        closeStory();
       }
     };
 
-    window.closeBooking = function() {
-      document.getElementById('bookingOverlay').classList.remove('open');
-      document.body.style.overflow = '';
-      document.getElementById('customCalendar').classList.remove('open');
-      document.getElementById('customTimeDropdown').classList.remove('open');
+    window.prevSlide = function() {
+      progressElapsed = 0;
+      if (currentSlideIndex > 0) {
+        document.querySelectorAll('.story-slide').forEach(s => s.classList.remove('active'));
+        currentSlideIndex--;
+        document.querySelector(`.story-slide[data-idx="${currentSlideIndex}"]`).classList.add('active');
+        document.querySelectorAll('#storySlides video').forEach(v => v.pause());
+        startSlideProgress();
+      } else if (currentStoryIndex > 0) {
+        openStory(currentStoryIndex - 1);
+        currentSlideIndex = events[currentStoryIndex].media.length - 1;
+        document.querySelectorAll('.story-slide').forEach(s => s.classList.remove('active'));
+        document.querySelector(`.story-slide[data-idx="${currentSlideIndex}"]`).classList.add('active');
+      }
     };
 
-    // ============ ВХОД / ТЕЛЕФОН / КОД ============
-    window.openLogin = function() {
-      document.getElementById('loginOverlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    };
+    // Пауза при удержании (без иконки)
+    const storyInner = document.getElementById('storyViewerInner');
     
-    window.closeLogin = function() {
-      document.getElementById('loginOverlay').classList.remove('open');
-      if (!document.querySelector('.phone-overlay.open, .legal-overlay.open')) {
-        document.body.style.overflow = '';
-      }
-    };
+    function pauseStory() {
+      isPaused = true;
+      document.querySelectorAll('#storySlides video').forEach(v => v.pause());
+    }
+    
+    function resumeStory() {
+      isPaused = false;
+      document.querySelectorAll('#storySlides video').forEach(v => v.play().catch(()=>{}));
+    }
 
-    let currentRequestId = null; // Храним ID запроса от Telegram
-    let currentPhoneForAuth = ''; // Храним номер телефона
-    let currentUser = null; // Храним данные текущего пользователя
+    storyInner.addEventListener('mousedown', pauseStory);
+    storyInner.addEventListener('mouseup', resumeStory);
+    storyInner.addEventListener('mouseleave', resumeStory);
 
-    // ============ ПРОФИЛЬ ============
+    // Свайпы для тача
+    let touchStartX = 0;
+    storyInner.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      pauseStory();
+    }, {passive: true});
+
+    storyInner.addEventListener('touchend', (e) => {
+      resumeStory();
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 50) nextSlide();
+      if (touchEndX > touchStartX + 50) prevSlide();
+    }, {passive: true});
+
+    // ============ UI / UTILS ============
+    window.openSideMenu = function() { document.getElementById('sideMenuOverlay').classList.add('open'); document.getElementById('sideMenu').classList.add('open'); };
+    window.closeSideMenu = function() { document.getElementById('sideMenuOverlay').classList.remove('open'); document.getElementById('sideMenu').classList.remove('open'); };
+    
+    window.openLogin = function() { document.getElementById('loginOverlay').classList.add('open'); document.body.style.overflow = 'hidden'; };
+    window.closeLogin = function() { document.getElementById('loginOverlay').classList.remove('open'); document.body.style.overflow = ''; };
+    
+    window.openPhone = function() { closeLogin(); document.getElementById('phoneOverlay').classList.add('open'); };
+    window.closePhone = function() { document.getElementById('phoneOverlay').classList.remove('open'); document.body.style.overflow = ''; };
+    
     window.openProfile = function() {
-      if (!currentUser) {
-        openLogin();
-        return;
-      }
-      document.getElementById('profileName').textContent = currentUser.name || 'Гость';
+      if (!currentUser) return openLogin();
+      document.getElementById('profileName').textContent = currentUser.name;
       document.getElementById('profilePhone').textContent = `+7 ${currentUser.phone}`;
       document.getElementById('profileOverlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
     };
-
-    window.closeProfile = function() {
-      document.getElementById('profileOverlay').classList.remove('open');
-      document.body.style.overflow = '';
-    };
-
+    window.closeProfile = function() { document.getElementById('profileOverlay').classList.remove('open'); };
+    
     window.logout = function() {
       currentUser = null;
       closeProfile();
+      document.getElementById('desktopLoginBtn').textContent = 'Войти';
+      document.getElementById('desktopLoginBtn').onclick = openLogin;
+      document.getElementById('mobileLoginBtn').textContent = 'Войти';
+      document.getElementById('mobileLoginBtn').onclick = openLogin;
       showToast('Вы вышли из профиля', '👋');
-      
-      const desktopBtn = document.getElementById('desktopLoginBtn');
-      if (desktopBtn) {
-        desktopBtn.textContent = 'Войти';
-        desktopBtn.onclick = openLogin;
-      }
-      
-      const mobileBtn = document.getElementById('mobileLoginBtn');
-      if (mobileBtn) {
-        mobileBtn.textContent = 'Войти';
-        mobileBtn.onclick = openLogin;
-      }
     };
 
-    window.openPhone = function() {
-      closeLogin();
-      document.getElementById('phoneOverlay').classList.add('open');
-      const input = document.getElementById('phoneInput');
-      if (input) input.value = '';
-      validatePhone();
-    };
-    
-    window.closePhone = function() {
-      document.getElementById('phoneOverlay').classList.remove('open');
-      if (!document.querySelector('.login-overlay.open, .legal-overlay.open, #codeOverlay.open')) {
-        document.body.style.overflow = '';
-      }
-    };
+    window.openBooking = function() { document.getElementById('bookingOverlay').classList.add('open'); document.body.style.overflow = 'hidden'; };
+    window.closeBooking = function() { document.getElementById('bookingOverlay').classList.remove('open'); document.body.style.overflow = ''; };
 
-    window.closeCode = function() {
-      document.getElementById('codeOverlay').classList.remove('open');
-      document.getElementById('codeInput').value = '';
-      document.getElementById('codeSubmit').disabled = true;
-      if (!document.querySelector('.login-overlay.open, .legal-overlay.open, .phone-overlay.open')) {
-        document.body.style.overflow = '';
-      }
-    };
+    window.openSchedule = function() { alert('Работаем с 12:00 до 00:00'); };
+    window.closeSchedule = function() {};
+
+    // Валидация
+    document.getElementById('phoneInput')?.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length > 10) val = val.slice(0, 10);
+      let fmt = val.length > 0 ? '(' + val.slice(0, 3) : '';
+      if (val.length >= 4) fmt += ') ' + val.slice(3, 6);
+      if (val.length >= 7) fmt += '-' + val.slice(6, 8);
+      if (val.length >= 9) fmt += '-' + val.slice(8, 10);
+      e.target.value = fmt;
+      document.getElementById('phoneSubmit').disabled = val.length !== 10;
+    });
+
+    document.getElementById('codeInput')?.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+      document.getElementById('codeSubmit').disabled = e.target.value.length !== 6;
+    });
 
     window.submitPhone = async function() {
-      const input = document.getElementById('phoneInput');
-      const val = input ? input.value.replace(/\D/g, '') : '';
-      
-      if (val.length === 10) {
-        currentPhoneForAuth = val;
-        const btn = document.getElementById('phoneSubmit');
-        const originalText = btn.textContent;
-        btn.textContent = 'Отправка...';
-        btn.disabled = true;
-
-        try {
-          const res = await fetch('/api/send-code', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone: val })
-          });
-
-          const data = await res.json();
-
-          if (res.ok && data.request_id) {
-            currentRequestId = data.request_id;
-            closePhone();
-            document.getElementById('codeOverlay').classList.add('open');
-            showToast('Код отправлен в Telegram', '📱');
-            setTimeout(() => document.getElementById('codeInput').focus(), 300);
-          } else {
-            showToast('❌ ' + (data.error || 'Ошибка отправки'), '⚠️');
-          }
-        } catch (err) {
-          console.error(err);
-          showToast('❌ Сервер недоступен', '⚠️');
-        } finally {
-          btn.textContent = originalText;
-          validatePhone(); 
-        }
-      }
-    };
-
-    window.submitCode = async function() {
-      const codeInput = document.getElementById('codeInput');
-      const code = codeInput.value.replace(/\D/g, '');
-      
-      if (code.length !== 6 || !currentRequestId) return;
-
-      const btn = document.getElementById('codeSubmit');
-      const originalText = btn.textContent;
-      btn.textContent = 'Проверка...';
-      btn.disabled = true;
-
-      try {
-        const res = await fetch('/api/check-code', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            request_id: currentRequestId, 
-            code: code 
-          })
-        });
-
-        const data = await res.json();
-
-        if (res.ok && data.valid) {
-          showToast('✓ Вы успешно вошли!', '🎉');
-          
-          // Сохраняем пользователя (в реальном проекте здесь данные с сервера)
-          currentUser = { name: 'Иван', phone: currentPhoneForAuth };
-          
-          closeCode();
-          
-          // Меняем кнопку в навбаре на "Профиль"
-          const desktopBtn = document.getElementById('desktopLoginBtn');
-          if (desktopBtn) {
-            desktopBtn.textContent = 'Профиль';
-            desktopBtn.onclick = openProfile;
-          }
-          
-          // Меняем кнопку в мобильной версии
-          const mobileBtn = document.getElementById('mobileLoginBtn');
-          if (mobileBtn) {
-            mobileBtn.textContent = 'Профиль';
-            mobileBtn.onclick = openProfile;
-          }
-        } else {
-          showToast('❌ Неверный код', '⚠️');
-          codeInput.value = '';
-          btn.disabled = true;
-        }
-      } catch (err) {
-        console.error(err);
-        showToast('❌ Ошибка проверки', '⚠️');
-      } finally {
-        btn.textContent = originalText;
-      }
-    };
-
-    window.resendCode = async function() {
-      if (!currentPhoneForAuth) return;
-      const btn = event.target;
-      const originalText = btn.textContent;
+      const val = document.getElementById('phoneInput').value.replace(/\D/g, '');
+      const btn = document.getElementById('phoneSubmit');
       btn.textContent = 'Отправка...';
-      btn.style.pointerEvents = 'none';
-
+      btn.disabled = true;
       try {
-        const res = await fetch('/api/send-code', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: currentPhoneForAuth })
-        });
+        const res = await fetch('/api/send-code', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({phone: val}) });
         const data = await res.json();
         if (res.ok && data.request_id) {
           currentRequestId = data.request_id;
-          showToast('Код отправлен повторно', '📱');
+          currentPhoneForAuth = val;
+          closePhone();
+          document.getElementById('codeOverlay').classList.add('open');
+        } else {
+          showToast('Ошибка: ' + (data.error || 'Неизвестно'), '⚠️');
         }
-      } catch (err) {
-        showToast('❌ Ошибка отправки', '⚠️');
-      } finally {
-        btn.textContent = originalText;
-        btn.style.pointerEvents = 'auto';
-      }
+      } catch(e) { showToast('Сервер недоступен', '⚠️'); }
+      btn.textContent = 'Получить код';
+      btn.disabled = false;
     };
 
-    function validatePhone() {
-      const input = document.getElementById('phoneInput');
-      const btn = document.getElementById('phoneSubmit');
-      if (!input || !btn) return;
-      const val = input.value.replace(/\D/g, '');
-      btn.disabled = val.length !== 10;
-    }
-
-    // ============ ИНИЦИАЛИЗАЦИЯ ИНПУТОВ (БЕЗ DOMContentLoaded) ============
-    // Телефон
-    const phoneInput = document.getElementById('phoneInput');
-    if (phoneInput) {
-      phoneInput.addEventListener('input', (e) => {
-        let val = e.target.value.replace(/\D/g, '');
-        if (val.length > 10) val = val.slice(0, 10);
-        
-        let formatted = '';
-        if (val.length > 0) formatted = '(' + val.slice(0, 3);
-        if (val.length >= 4) formatted += ') ' + val.slice(3, 6);
-        if (val.length >= 7) formatted += '-' + val.slice(6, 8);
-        if (val.length >= 9) formatted += '-' + val.slice(8, 10);
-        
-        e.target.value = formatted;
-        validatePhone();
-      });
-      
-      phoneInput.addEventListener('keypress', (e) => {
-        if (!/[0-9]/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)) {
-          e.preventDefault();
+    window.submitCode = async function() {
+      const code = document.getElementById('codeInput').value;
+      const btn = document.getElementById('codeSubmit');
+      btn.textContent = 'Проверка...';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/check-code', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({request_id: currentRequestId, code}) });
+        const data = await res.json();
+        if (res.ok && data.valid) {
+          currentUser = { name: 'Иван', phone: currentPhoneForAuth };
+          closeCode();
+          document.getElementById('desktopLoginBtn').textContent = 'Профиль';
+          document.getElementById('desktopLoginBtn').onclick = openProfile;
+          document.getElementById('mobileLoginBtn').textContent = 'Профиль';
+          document.getElementById('mobileLoginBtn').onclick = openProfile;
+          showToast('Успешный вход!', '🎉');
+        } else {
+          showToast('Неверный код', '⚠️');
         }
-      });
-    }
-
-    // Код
-    const codeInput = document.getElementById('codeInput');
-    if (codeInput) {
-      codeInput.addEventListener('input', (e) => {
-        let val = e.target.value.replace(/\D/g, '');
-        if (val.length > 6) val = val.slice(0, 6);
-        e.target.value = val;
-        
-        const btn = document.getElementById('codeSubmit');
-        if (btn) btn.disabled = val.length !== 6;
-      });
-    }
-
-    // ============ LEGAL ============
-    window.openLegal = function() {
-      document.getElementById('legalOverlay').classList.add('open');
-    };
-    window.closeLegal = function() {
-      document.getElementById('legalOverlay').classList.remove('open');
-      if (!document.querySelector('.phone-overlay.open, .login-overlay.open')) {
-        document.body.style.overflow = '';
-      }
+      } catch(e) { showToast('Ошибка', '⚠️'); }
+      btn.textContent = 'Подтвердить';
+      btn.disabled = false;
     };
 
-    // ============ ОТПРАВКА В TELEGRAM ============
-    const TG_ENDPOINT = '/api/send';
+    window.closeCode = function() { document.getElementById('codeOverlay').classList.remove('open'); document.body.style.overflow = ''; };
 
     window.submitBooking = async function(e) {
       e.preventDefault();
-      const name = document.getElementById('bname').value;
-      const phone = document.getElementById('bphone').value;
-      const date = document.getElementById('bdate').value;
-      const time = document.getElementById('btime').value;
-      const guests = document.getElementById('bguests').value;
-      
-      const btn = document.querySelector('.booking-submit');
-      const originalText = btn.textContent;
+      const btn = e.target.querySelector('button[type="submit"]');
       btn.textContent = 'Отправка...';
-      btn.disabled = true;
-
       try {
-        const res = await fetch(TG_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'booking',
-            name: name,
-            phone: phone,
-            date: date,
-            time: time,
-            guests: guests
-          })
+        await fetch('/api/send', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ type: 'booking', name: document.getElementById('bname').value, phone: document.getElementById('bphone').value })
         });
-
-        if (res.ok) {
-          closeBooking();
-          showToast(`✓ ${name}, ждём вас ${date} в ${time}`, '🎉');
-          document.getElementById('bookingForm').reset();
-          document.getElementById('btime').value = '19:00';
-          document.getElementById('bdate').value = '';
-          document.getElementById('bguests').value = '2';
-        } else {
-          showToast('❌ Ошибка при отправке брони', '⚠️');
-        }
-      } catch (err) {
-        console.error(err);
-        showToast('❌ Сервер недоступен', '⚠️');
-      } finally {
-        btn.textContent = originalText;
-        btn.disabled = false;
-      }
+        closeBooking();
+        showToast('Бронь отправлена!', '🎉');
+      } catch(e) { showToast('Ошибка отправки', '⚠️'); }
+      btn.textContent = 'Забронировать';
     };
 
     window.checkout = async function() {
-      if (cart.length === 0) return;
-      
-      const btn = document.getElementById('checkoutBtn');
-      const originalText = btn.textContent;
-      btn.textContent = 'Отправка...';
-      btn.disabled = true;
-
-      const itemsText = cart.map(item => `${item.name} x${item.qty} = ${item.price * item.qty} ₽`).join('\n');
-      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-
+      if (!cart.length) return;
+      const itemsText = cart.map(i => `${i.name} x${i.qty} = ${i.price*i.qty} ₽`).join('\n');
+      const total = cart.reduce((s, i) => s + i.price*i.qty, 0);
       try {
-        const res = await fetch(TG_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'order',
-            items: itemsText,
-            total: total
-          })
-        });
-
-        if (res.ok) {
-          showToast('✓ Заказ оформлен! Курьер уже в пути 🚚', '🎉');
-          cart = [];
-          updateCart();
-          closeCart();
-        } else {
-          showToast('❌ Ошибка при оформлении заказа', '⚠️');
-        }
-      } catch (err) {
-        console.error(err);
-        showToast('❌ Сервер недоступен', '⚠️');
-      } finally {
-        btn.textContent = originalText;
-        btn.disabled = false;
-      }
+        await fetch('/api/send', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ type: 'order', items: itemsText, total }) });
+        showToast('Заказ оформлен!', '🎉');
+        cart = [];
+        updateCart();
+        closeCart();
+      } catch(e) { showToast('Ошибка', '⚠️'); }
     };
 
-    // ============ ДРОПДАУНЫ / КАЛЕНДАРЬ ============
-    function toggleDropdown(dropdownId, inputElement) {
-      const dropdown = document.getElementById(dropdownId);
-      const isOpen = dropdown.classList.contains('open');
-      document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
-      if (!isOpen) {
-        dropdown.classList.add('open');
-        const rect = inputElement.getBoundingClientRect();
-        const spaceBelow = window.innerHeight - rect.bottom;
-        if (spaceBelow < 300) dropdown.classList.add('drop-up');
-        else dropdown.classList.remove('drop-up');
-      }
-    }
-
-    let currentCalDate = new Date();
-    let selectedCalDate = null;
-    const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-    const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-
-    function renderCalendar() {
-      const grid = document.getElementById('calGrid');
-      const title = document.getElementById('calTitle');
-      if (!grid || !title) return;
-      const year = currentCalDate.getFullYear();
-      const month = currentCalDate.getMonth();
-      title.textContent = `${months[month]} ${year}`;
-      grid.innerHTML = '';
-      weekdays.forEach(wd => {
-        const el = document.createElement('div');
-        el.className = 'cal-weekday';
-        el.textContent = wd;
-        grid.appendChild(el);
-      });
-      const firstDay = new Date(year, month, 1);
-      let startDay = firstDay.getDay();
-      startDay = startDay === 0 ? 6 : startDay - 1;
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      for (let i = 0; i < startDay; i++) {
-        const el = document.createElement('div');
-        el.className = 'cal-day empty';
-        grid.appendChild(el);
-      }
-      const today = new Date();
-      today.setHours(0,0,0,0);
-      for (let d = 1; d <= daysInMonth; d++) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'cal-day';
-        btn.textContent = d;
-        const thisDate = new Date(year, month, d);
-        if (thisDate < today) btn.disabled = true;
-        else btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          selectedCalDate = thisDate;
-          const dd = String(d).padStart(2, '0');
-          const mm = String(month + 1).padStart(2, '0');
-          document.getElementById('bdate').value = `${dd}.${mm}.${year}`;
-          document.getElementById('customCalendar').classList.remove('open');
-          renderCalendar();
-        });
-        if (thisDate.getTime() === today.getTime()) btn.classList.add('today');
-        if (selectedCalDate && thisDate.getTime() === selectedCalDate.getTime()) btn.classList.add('selected');
-        grid.appendChild(btn);
-      }
-      const prevBtn = document.getElementById('calPrev');
-      const now = new Date();
-      prevBtn.disabled = year === now.getFullYear() && month === now.getMonth();
-    }
-
-    document.getElementById('bdate').addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleDropdown('customCalendar', e.target);
-      if (document.getElementById('customCalendar').classList.contains('open')) {
-        if (selectedCalDate) {
-          currentCalDate = new Date(selectedCalDate.getFullYear(), selectedCalDate.getMonth(), 1);
-        } else {
-          currentCalDate = new Date();
-        }
-        renderCalendar();
-      }
-    });
-    
-    document.getElementById('calPrev').addEventListener('click', (e) => {
-      e.stopPropagation();
-      currentCalDate.setMonth(currentCalDate.getMonth() - 1);
-      renderCalendar();
-    });
-    
-    document.getElementById('calNext').addEventListener('click', (e) => {
-      e.stopPropagation();
-      currentCalDate.setMonth(currentCalDate.getMonth() + 1);
-      renderCalendar();
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.form-group') && !e.target.closest('.custom-dropdown')) {
-        document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
-      }
-    });
-
-    function renderTimeSlots() {
-      const grid = document.getElementById('timeGrid');
-      if (!grid) return;
-      grid.innerHTML = '';
-      for (let h = 12; h <= 22; h++) {
-        for (let m = 0; m < 60; m += 30) {
-          if (h === 22 && m === 30) break; // Последний слот 22:00
-          const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-          const el = document.createElement('button');
-          el.type = 'button';
-          el.className = 'time-slot';
-          el.textContent = timeStr;
-          el.addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.getElementById('btime').value = timeStr;
-            document.getElementById('customTimeDropdown').classList.remove('open');
-            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-            el.classList.add('selected');
-          });
-          grid.appendChild(el);
-        }
-      }
-    }
-    
-    document.getElementById('btime').addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleDropdown('customTimeDropdown', e.target);
-      if (document.getElementById('customTimeDropdown').classList.contains('open')) {
-        renderTimeSlots();
-      }
-    });
-
-    // ============ ГОСТИ ============
-    document.getElementById('guestMinus').addEventListener('click', () => {
-      const input = document.getElementById('bguests');
-      let val = parseInt(input.value) || 1;
-      if (val > 1) input.value = val - 1;
-    });
-    
-    document.getElementById('guestPlus').addEventListener('click', () => {
-      const input = document.getElementById('bguests');
-      let val = parseInt(input.value) || 1;
-      if (val < 20) input.value = val + 1;
-    });
-
-    document.getElementById('bguests').addEventListener('input', (e) => {
-      let val = e.target.value.replace(/\D/g, '');
-      if (val > 20) val = 20;
-      e.target.value = val;
-    });
-
-    // ============ TOAST ============
     let toastTimeout;
     window.showToast = function(text, icon = '✓') {
       const toast = document.getElementById('toast');
-      const toastText = document.getElementById('toastText');
-      const toastIcon = document.getElementById('toastIcon');
-      
-      if (!toast) return;
-      
-      toastText.textContent = text;
-      toastIcon.textContent = icon;
-      
+      document.getElementById('toastText').textContent = text;
+      document.getElementById('toastIcon').textContent = icon;
       toast.classList.add('show');
-      
       clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
+      toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
     };
 
-    // ============ СТАТУС РАБОТЫ И РАСПИСАНИЕ ============
-    const scheduleData = {
-      'Вс': { open: 12, close: 0, label: '12:00 – 00:00' },
-      'Пн': { open: 12, close: 0, label: '12:00 – 00:00' },
-      'Вт': { open: 12, close: 0, label: '12:00 – 00:00' },
-      'Ср': { open: 12, close: 0, label: '12:00 – 00:00' },
-      'Чт': { open: 12, close: 0, label: '12:00 – 00:00' },
-      'Пт': { open: 12, close: 2, label: '12:00 – 02:00' },
-      'Сб': { open: 12, close: 2, label: '12:00 – 02:00' }
-    };
-
+    // Обновление статуса работы
     function updateStatus() {
       const now = new Date();
-      const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-      const todayStr = days[now.getDay()];
-      const todayData = scheduleData[todayStr];
-      
       const hour = now.getHours();
-      const isOpen = (todayData.close === 0) 
-        ? (hour >= todayData.open) 
-        : (hour >= todayData.open || hour < todayData.close);
-        
-      const statusTextDesktop = document.getElementById('desktopStatusText');
-      const statusTextMobile = document.getElementById('mobileStatusText');
-      const desktopBadge = document.getElementById('desktopStatusBadge');
-      const mobilePill = document.getElementById('mobileStatusPill');
-      
+      const isOpen = hour >= 12 && hour < 24;
       const text = isOpen ? 'Сейчас открыто' : 'Сейчас закрыто';
-      
-      if (statusTextDesktop) statusTextDesktop.textContent = text;
-      if (statusTextMobile) statusTextMobile.textContent = text;
-      
-      if (desktopBadge) desktopBadge.classList.toggle('is-closed', !isOpen);
-      if (mobilePill) mobilePill.classList.toggle('is-closed', !isOpen);
+      document.getElementById('desktopStatusText').textContent = text;
+      document.getElementById('mobileStatusText').textContent = text;
+      document.getElementById('desktopStatusBadge').classList.toggle('is-closed', !isOpen);
+      document.getElementById('mobileStatusPill').classList.toggle('is-closed', !isOpen);
     }
-
-    function updateScheduleText() {
-      const now = new Date();
-      const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-      const todayStr = days[now.getDay()];
-      const todayData = scheduleData[todayStr];
-      const textEl = document.getElementById('scheduleText');
-      if (textEl) textEl.textContent = todayData.label;
-    }
-
     updateStatus();
-    updateScheduleText();
-    setInterval(() => {
-      updateStatus();
-      updateScheduleText();
-    }, 60000);
-
-    window.openSchedule = function(type) {
-      const overlay = document.getElementById('scheduleOverlay');
-      const list = document.getElementById('scheduleList');
-      const title = document.getElementById('scheduleTitle');
-      
-      if (!overlay || !list) return;
-      
-      title.textContent = type === 'restaurant' ? 'График работы ресторана' : 'График доставки';
-      
-      const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-      const today = new Date().getDay();
-      const todayStr = days[today === 0 ? 6 : today - 1];
-      
-      list.innerHTML = days.map(day => {
-        const data = scheduleData[day];
-        const isToday = day === todayStr;
-        return `
-          <div class="schedule-row ${isToday ? 'today' : ''}">
-            <span class="day-name">${day}</span>
-            <span class="day-time">${data.label}</span>
-          </div>
-        `;
-      }).join('');
-      
-      overlay.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    };
-
-    window.closeSchedule = function() {
-      document.getElementById('scheduleOverlay').classList.remove('open');
-      document.body.style.overflow = '';
-    };
+    setInterval(updateStatus, 60000);
 
   </script>
 </body>
