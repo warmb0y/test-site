@@ -8,11 +8,11 @@ export default async function handler(req, res) {
 
   const { type, ...data } = req.body;
 
-  const BOT_TOKEN = process.env.9230606505:AAEq9aD32whiSzDjJrNfuZjt7FYUBGnHWPM;
-  const CHAT_ID = process.env.-1003268239526;
+  const BOT_TOKEN = process.env.TG_BOT_TOKEN;
+  const CHAT_ID = process.env.TG_CHAT_ID;
   const THREAD_ID = type === 'booking' 
-    ? process.env.TG_THREAD_BOOKING="2" 
-    : process.env.TG_THREAD_ORDER="5";
+    ? process.env.TG_THREAD_BOOKING 
+    : process.env.TG_THREAD_ORDER;
 
   if (!BOT_TOKEN || !CHAT_ID) {
     return res.status(500).json({ ok: false, error: 'Telegram config missing' });
