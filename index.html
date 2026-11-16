@@ -1022,7 +1022,7 @@
           </svg>
         </button>
         <a href="#" class="logo">
-          <img src="public/images/logo1.png" alt="Эль Крыша" style="height: 50px; width: auto; object-fit: contain;">
+          <img src="/images/logo1.png" alt="Эль Крыша" style="height: 50px; width: auto; object-fit: contain;">
         </a>
       </div>
 
@@ -1047,7 +1047,7 @@
     <div class="side-menu" id="sideMenu">
       <div class="side-menu-header">
         <a href="#" class="logo" onclick="closeSideMenu()">
-          <img src="public/images/logo1.png" alt="Эль Крыша" style="height: 50px; width: auto; object-fit: contain;">
+          <img src="/images/logo1.png" alt="Эль Крыша" style="height: 50px; width: auto; object-fit: contain;">
         </a>
         <button class="side-menu-close" onclick="closeSideMenu()" aria-label="Закрыть">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -1109,7 +1109,7 @@
     </div>
 
     <section class="hero-desktop" id="hero">
-      <video autoplay muted loop playsinline src="public/video/hero.mp4"></video>
+      <video autoplay muted loop playsinline src="/video/hero.mp4"></video>
       <div class="hero-content">
         <div class="hero-badge" id="desktopStatusBadge" onclick="openSchedule('delivery')">
           <span class="status-dot"></span>
@@ -1191,7 +1191,7 @@
       <div class="footer-grid">
         <div class="footer-col">
           <a href="#" class="logo" style="margin-bottom:16px;">
-              <img src="public/images/logo1.png" alt="Эль Крыша" style="height: 60px; width: auto; object-fit: contain;">
+              <img src="/images/logo1.png" alt="Эль Крыша" style="height: 60px; width: auto; object-fit: contain;">
           </a>
           <p style="color:var(--muted);font-family:'Lora',sans-serif; font-size:13px;line-height:1.6;max-width:320px;">
             Авторская кухня и тёплая атмосфера. Готовим из свежих продуктов и доставляем по всему городу.
@@ -1225,7 +1225,7 @@
   <!-- ================= MOBILE ================= -->
   <div class="mobile-only">
     <div class="hero-mobile" id="heroMobile">
-      <video autoplay muted loop playsinline src="public/video/hero.mp4"></video>
+      <video autoplay muted loop playsinline src="/video/hero.mp4"></video>
       <div class="hero-mobile-top">
         <button class="glass circle" aria-label="Меню" onclick="openSideMenu()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -1508,7 +1508,7 @@
   <script type="module">
     // ============ МЕНЮ ============
     const menu = [
-      { id: 1, name: 'Скрембл/Глазунья/Омлет', desc: 'Лосось слабосоленый, авокадо, черри, подсушенная чиабата, лист салата', price: 650, image: 'public/images/dishes/scrembl.jpg', tag: null, cat: 'later' },
+      { id: 1, name: 'Скрембл/Глазунья/Омлет', desc: 'Лосось слабосоленый, авокадо, черри, подсушенная чиабата, лист салата', price: 650, image: '/images/dishes/scrembl.jpg', tag: null, cat: 'later' },
       { id: 2, name: 'Дранники с лососем', desc: 'Дранники с картофелем и цукини, слабосоленный лосось, крем чиз', price: 750, emoji: '🥩', tag: null, cat: 'later' },
       { id: 3, name: 'Трио золотистых блинов с креветками', desc: 'Блины с креветками и спелым авокадо и творожным сыром', price: 550, emoji: '🍝', tag: null, cat: 'later' },
       { id: 4, name: 'Блины с лососем', desc: 'блины со слабосоленным лососем и мягким творожным сыром', price: 650, emoji: '🥗', tag: null, cat: 'later' },
@@ -1541,7 +1541,7 @@
         time: '20:00 – 02:00',
         emoji: '🎷',
         media: [
-          { type: 'video', src: 'public/video/DJ INNOXI.mp4', poster: 'public/video/DJ INNOXI.jpg'},
+          { type: 'video', src: '/video/DJ INNOXI.mp4', poster: '/video/DJ INNOXI.jpg'},
         ]
       },
       {
@@ -1553,7 +1553,7 @@
         time: '20:00 – 02:00',
         emoji: '🍷',
         media: [
-          { type: 'video', src: 'public/video/misha.mp4', poster: 'public/video/misha.jpg'},
+          { type: 'video', src: '/video/misha.mp4', poster: '/video/misha.jpg'},
         ]
       },
       {
@@ -1565,7 +1565,7 @@
         time: '20:00 – 02:00',
         emoji: '🥂',
         media: [
-          { type: 'image', src: 'public/images/NG.jpg' },
+          { type: 'image', src: '/images/NG.jpg' },
         ]
       },
       {
@@ -1577,7 +1577,7 @@
         time: '12:00 - 16:00',
         emoji: '',
         media: [
-          { type: 'image', src: 'public/images/-20.jpg' },
+          { type: 'image', src: '/images/-20.jpg' },
         ]
       },
     ];
@@ -1998,7 +1998,7 @@
     };
 
     // ============ ОТПРАВКА В TELEGRAM ============
-    const TG_ENDPOINT = 'public/api/send';
+    const TG_ENDPOINT = '/api/send';
 
     window.submitBooking = async function(e) {
       e.preventDefault();
