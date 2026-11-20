@@ -478,19 +478,6 @@
     .story-nav:hover { background: rgba(62,165,106,0.6); }
     .story-nav.prev { left: 12px; }
     .story-nav.next { right: 12px; }
-	<!-- стрелка назад -->
-    <button class="story-nav prev" onclick="prevSlide()" aria-label="Предыдущий слайд">
-       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-         <polyline points="15 18 9 12 15 6"></polyline>
-       </svg>
-    </button>
-	
-	<!-- стрелка вперёд -->
-    <button class="story-nav next" onclick="nextSlide()" aria-label="Следующий слайд">
-       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-         <polyline points="9 18 15 12 9 6"></polyline>
-       </svg> 
-    </button>
 
     .story-slides {
       flex: 1;
@@ -1770,14 +1757,7 @@
       if (currentSlideIndex > 0) {
         currentSlideIndex--;
         switchSlide();
-      } else {
-	if (currentStoryIndex - 1);
-	  openStory(currentStoryIndex - 1);
-	  setTimeout(() => {
-	    currentSlideIndex = events[currentStoryIndex].media.length - 1;
-	    switchSlide();
-	  }, 50);
-	}
+      }
     };
 
     function switchSlide() {
@@ -2018,7 +1998,7 @@
     };
 
     // ============ ОТПРАВКА В TELEGRAM ============
-    const TG_ENDPOINT = 'api/send';
+    const TG_ENDPOINT = '/api/send';
 
     window.submitBooking = async function(e) {
       e.preventDefault();
