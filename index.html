@@ -478,20 +478,7 @@
     .story-nav:hover { background: rgba(62,165,106,0.6); }
     .story-nav.prev { left: 12px; }
     .story-nav.next { right: 12px; }
-	<!-- стрелка назад -->
-    <button class="story-nav prev" onclick="prevSlide()" aria-label="Предыдущий слайд">
-       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-         <polyline points="15 18 9 12 15 6"></polyline>
-       </svg>
-    </button>
-	
-	<!-- стрелка вперёд -->
-    <button class="story-nav next" onclick="nextSlide()" aria-label="Следующий слайд">
-       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-         <polyline points="9 18 15 12 9 6"></polyline>
-       </svg> 
-    </button>
-
+	  
     .story-slides {
       flex: 1;
       position: relative;
@@ -2471,6 +2458,135 @@
     document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = '';
     });
+
+	  <script>
+  // Переменные состояния
+  let currentSlideIndex = 0;
+  let storyTimer = null;
+  let startX = 0;
+  let startY = 0;
+  let isPaused = false;
+  let touchStartTime = 0;
+
+  // Находим элементы
+  const viewer = document.querySelector('.story-viewer');
+  const slides = document.querySelectorAll('.story-slide');
+  const progressFill = document.querySelector('.story-progress-fill');
+  
+  // Функция открытия сторис (пример, если у вас она уже есть — используйте свою)
+  function openStory(index) {
+    currentSlideIndex = index;
+    updateSlide();
+    viewer.classList.add('open');
+    startStoryTimer();
+  }
+
+  // Обновление активного слайда
+  function updateSlide() {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === currentSlideIndex);
+    });
+    // Сброс прогресс-бара
+    if (progressFill) progressFill.style.width = '0%';
+  }
+
+  // Таймер для автопереключения (как в сторис)
+  function startStoryTimer() {
+    clearInterval(storyTimer);
+    if (isPaused) return;
+    
+    let width = 0;
+    storyTimer = setInterval(() => {
+      if (isPaused) return;
+      width += 1;
+      if (progressFill) progressFill.style.width = width + '%';
+      
+      if (width >= 100) {
+        clearInterval(storyTimer);
+        nextSlide(); // Переключаем на следующий
+      }
+    }, 50); // 5 секунд на слайд (100 * 50мс)
+  }
+
+  // Следующий слайд
+  function nextSlide() {
+    if (currentSlideIndex < slides.length - 1) {
+      currentSlideIndex++;
+      updateSlide();
+      startStoryTimer();
+    } else {
+      closeStory(); // Если слайды кончились — закрываем
+    }
+  }
+
+  // Предыдущий слайд
+  function prevSlide() {
+    if (currentSlideIndex > 0) {
+      currentSlideIndex--;
+      updateSlide();
+      startStoryTimer();
+    }
+  }
+
+  // Закрытие
+  function closeStory() {
+    clearInterval(storyTimer);
+    viewer.classList.remove('open');
+    isPaused = false;
+  }
+
+  // --- ОБРАБОТКА СВАЙПОВ И ПАУЗЫ ---
+
+  viewer.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    touchStartTime = Date.now();
+    isPaused = true; // Ставим на паузу при касании
+    clearInterval(storyTimer);
+  });
+
+  viewer.addEventListener('touchend', (e) => {
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const diffX = endX - startX;
+    const diffY = endY - startY;
+    const timeDiff = Date.now() - touchStartTime;
+
+    // Логика свайпа (горизонтальный)
+    if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) {
+        prevSlide(); // Свайп вправо — назад
+      } else {
+        nextSlide(); // Свайп влево — вперед
+      }
+    } 
+    // Логика тапа (если не свайп и быстро)
+    else if (Math.abs(diffX) < 10 && Math.abs(diffY) < 10 && timeDiff < 200) {
+       // Если тапнули по правой части — вперед, по левой — назад
+       if (endX > window.innerWidth / 2) {
+         nextSlide();
+       } else {
+         prevSlide();
+       }
+    }
+
+    // Возобновляем таймер, если не закрыли
+    if (viewer.classList.contains('open')) {
+      isPaused = false;
+      startStoryTimer();
+    }
+  });
+
+  // Для десктопа (мышь)
+  viewer.addEventListener('mousedown', () => {
+    isPaused = true;
+    clearInterval(storyTimer);
+  });
+
+  viewer.addEventListener('mouseup', () => {
+    isPaused = false;
+    startStoryTimer();
+  })
   </script>
 </body>
 </html>
