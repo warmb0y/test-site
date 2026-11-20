@@ -1960,7 +1960,7 @@
       if (btn) btn.disabled = true;
 
       try {
-        const response = await fetch('/api/send-code', {
+        const response = await fetch('api/send-code', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json'},
           body: JSON.stringify({ phone: phoneNumber })
@@ -1971,7 +1971,7 @@
         if (data.success) {
           window.pendindPhone = phoneNumber;
 
-          showCodeInputStep();
+        showCodeInputStep();
           
         showToast('✓ Код отправлен на номер +7 ' + val, '📱');
         } else {
