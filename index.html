@@ -1977,7 +1977,7 @@
           
         showToast('✓ Код отправлен на номер +7 ' + val, '📱');
         } else {
-          showToast('Ошибка: ' + (data.error | | 'Не удалось отправить код'), '⚠️');
+          showToast('Ошибка: ' + (data.error || 'Не удалось отправить код'), '⚠️');
       if (btn) btn.disabled = false;
     }
         } catch (err) {
