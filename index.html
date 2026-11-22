@@ -1951,7 +1951,7 @@
         document.body.style.overflow = '';
       }
     };
-    window.submitPhone = function() {
+    window.submitPhone = async function() {
       const input = document.getElementById('phoneInput');
       const val = input ? input.value.replace(/\D/g, '') : '';
       if (val.length === 10) return;
