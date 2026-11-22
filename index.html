@@ -1951,6 +1951,70 @@
         document.body.style.overflow = '';
       }
     };
+    window.showCodeInputStep = function() {
+  // 1. Скрываем инпут телефона и кнопку "Получить код"
+  const phoneWrapper = document.querySelector('.phone-input-wrapper');
+  const submitBtn = document.getElementById('phoneSubmit');
+  if (phoneWrapper) phoneWrapper.style.display = 'none';
+  if (submitBtn) submitBtn.style.display = 'none';
+
+  // 2. Проверяем, есть ли уже блок для ввода кода
+  let codeBlock = document.getElementById('codeVerifyBlock');
+  
+  if (!codeBlock) {
+    // Если нет — создаем его
+    codeBlock = document.createElement('div');
+    codeBlock.id = 'codeVerifyBlock';
+    codeBlock.innerHTML = `
+      <p style="margin-bottom:10px; color:var(--muted); font-size:14px;">Введите код из Telegram</p>
+      <input type="text" id="verifyCodeInput" class="phone-input" placeholder="123456" maxlength="6" style="margin-bottom:15px; text-align:center; letter-spacing:5px; font-size:20px;">
+      <button class="phone-submit" onclick="verifyCode()" style="margin-bottom:0;">Подтвердить</button>
+    `;
+    // Вставляем блок в модалку (перед юридическим текстом)
+    const legalText = document.querySelector('.phone-legal');
+    if (legalText) {
+      legalText.parentNode.insertBefore(codeBlock, legalText);
+    } else {
+      document.querySelector('.phone-modal').appendChild(codeBlock);
+    }
+  } else {
+    // Если блок уже есть (например, при повторном открытии) — просто показываем
+    codeBlock.style.display = 'block';
+  }
+};
+    window.verifyCode = async function() {
+  const codeInput = document.getElementById('verifyCodeInput');
+  const code = codeInput ? codeInput.value : '';
+  
+  if (code.length < 4) {
+    showToast('Введите код полностью', '⚠️');
+    return;
+  }
+
+  // Берем номер телефона, который сохранили при отправке
+  const phone = window.pendingPhone; 
+
+  try {
+    const response = await fetch('/api/check-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: phone, code: code })
+    });
+    
+    const data = await response.json();
+    
+    if (data.valid) {
+      showToast('Успешный вход!', '✅');
+      closePhone(); // Закрываем модалку
+      // Здесь можно перезагрузить страницу или обновить интерфейс
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      showToast('Неверный код. Попробуйте снова.', '❌');
+    }
+  } catch (err) {
+    showToast('Ошибка сети при проверке кода', '⚠️');
+  }
+};
     window.submitPhone = async function() {
       const input = document.getElementById('phoneInput');
       const val = input ? input.value.replace(/\D/g, '') : '';
