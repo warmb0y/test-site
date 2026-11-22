@@ -1506,6 +1506,7 @@
   </div>
 
   <script type="module">
+    console.log("Скрипт начал загружаться!");
     // ============ МЕНЮ ============
     const menu = [
       { id: 1, name: 'Скрембл/Глазунья/Омлет', desc: 'Лосось слабосоленый, авокадо, черри, подсушенная чиабата, лист салата', price: 650, image: 'public/images/dishes/scrembl.jpg', tag: null, cat: 'later' },
@@ -1885,7 +1886,8 @@
       document.getElementById('cartDrawer').classList.remove('open');
       document.body.style.overflow = '';
     };
-
+    
+    console.log("Дошел до бокового меню!");
     // ============ БОКОВОЕ МЕНЮ ============
     window.openSideMenu = function() {
       document.getElementById('sideMenuOverlay').classList.add('open');
