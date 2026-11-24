@@ -1952,34 +1952,43 @@
       }
     };
     window.showCodeInputStep = function() {
-  // 1. Скрываем инпут телефона и кнопку "Получить код"
-  const phoneWrapper = document.querySelector('.phone-input-wrapper');
+  // 1. Скрываем поле ввода телефона и кнопку "Получить код"
+  const phoneInput = document.getElementById('phoneInput');
   const submitBtn = document.getElementById('phoneSubmit');
-  if (phoneWrapper) phoneWrapper.style.display = 'none';
+  
+  if (phoneInput) phoneInput.parentElement.style.display = 'none'; // скрываем обертку инпута
   if (submitBtn) submitBtn.style.display = 'none';
 
-  // 2. Проверяем, есть ли уже блок для ввода кода
+  // 2. Создаем блок для ввода кода, если его еще нет
   let codeBlock = document.getElementById('codeVerifyBlock');
   
   if (!codeBlock) {
-    // Если нет — создаем его
     codeBlock = document.createElement('div');
     codeBlock.id = 'codeVerifyBlock';
+    codeBlock.style.marginTop = '20px';
     codeBlock.innerHTML = `
-      <p style="margin-bottom:10px; color:var(--muted); font-size:14px;">Введите код из Telegram</p>
+      <p style="margin-bottom:10px; color:#a0d97a; font-size:14px; text-align:center;">Введите код из Telegram</p>
       <input type="text" id="verifyCodeInput" class="phone-input" placeholder="123456" maxlength="6" style="margin-bottom:15px; text-align:center; letter-spacing:5px; font-size:20px;">
-      <button class="phone-submit" onclick="verifyCode()" style="margin-bottom:0;">Подтвердить</button>
+      <button class="phone-submit" id="verifySubmitBtn" style="margin-bottom:0;">Подтвердить</button>
     `;
+    
     // Вставляем блок в модалку (перед юридическим текстом)
+    const phoneModal = document.querySelector('.phone-modal');
     const legalText = document.querySelector('.phone-legal');
-    if (legalText) {
-      legalText.parentNode.insertBefore(codeBlock, legalText);
-    } else {
-      document.querySelector('.phone-modal').appendChild(codeBlock);
+    
+    if (phoneModal && legalText) {
+      phoneModal.insertBefore(codeBlock, legalText);
+    } else if (phoneModal) {
+      phoneModal.appendChild(codeBlock);
     }
   } else {
-    // Если блок уже есть (например, при повторном открытии) — просто показываем
     codeBlock.style.display = 'block';
+  }
+
+  // 3. Привязываем функцию проверки к новой кнопке
+  const verifySubmitBtn = document.getElementById('verifySubmitBtn');
+  if (verifySubmitBtn) {
+    verifySubmitBtn.onclick = verifyCode; // Убедитесь, что функция verifyCode существует
   }
 };
     window.verifyCode = async function() {
