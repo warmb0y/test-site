@@ -2020,20 +2020,13 @@
 
         const data = await response.json();
 
-        if (data.success) {
-          window.pendindPhone = phoneNumber;
+        showCodeInputStep(); // Всегда открываем окно ввода кода
 
-        showCodeInputStep();
-          
-        showToast('✓ Код отправлен на номер +7 ' + val, '📱');
-        } else {
-          showToast('Ошибка: ' + (data.error || 'Не удалось отправить код'), '⚠️');
-      if (btn) btn.disabled = false;
-    }
-        } catch (err) {
-    showToast('Ошибка сети. Попробуйте позже.', '⚠️');
-    if (btn) btn.disabled = false;
-  }
+if (data.success) {
+  showToast('✓ Код отправлен', '📱');
+} else {
+  showToast('Ошибка, но окно открыто', '⚠️');
+}
 };
     function validatePhone() {
       const input = document.getElementById('phoneInput');
