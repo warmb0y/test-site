@@ -1987,6 +1987,7 @@
     });
     
     const data = await response.json();
+    console.log("ОТВЕТ ОТ СЕРВЕРА ПРИ ПРОВЕРКЕ:", data);
     
     if (data.valid) {
       showToast('Успешный вход!', '✅');
