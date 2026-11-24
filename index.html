@@ -2018,7 +2018,7 @@
     window.submitPhone = async function() {
       const input = document.getElementById('phoneInput');
       const val = input ? input.value.replace(/\D/g, '') : '';
-      if (val.length === 10) return;
+      if (val.length !== 10) return;
 
       const phoneNumber = '+7' + val;
       const btn = document.getElementById('phoneSubmit');
