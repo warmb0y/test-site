@@ -1471,6 +1471,11 @@
         <input type="tel" id="phoneInput" class="phone-input" placeholder="(999) 123-45-67" maxlength="15" inputmode="numeric" autocomplete="tel">
       </div>
       <button class="phone-submit" id="phoneSubmit" onclick="submitPhone()" disabled>Получить код</button>
+      <div id="codeVerifyBlock" style="display: none; margin-top: 15px;">
+  <p style="margin-bottom:10px; color:#a0d97a; font-size:14px; text-align:center;">Введите код из Telegram</p>
+  <input type="text" id="verifyCodeInput" class="phone-input" placeholder="123456" maxlength="6" style="margin-bottom:15px; text-align:center; letter-spacing:5px; font-size:20px; width: 100%;">
+  <button class="phone-submit" id="verifySubmitBtn" onclick="verifyCode()" style="margin-bottom:0;">Подтвердить</button>
+</div>
       <div class="phone-legal">
         Продолжая, вы соглашаетесь с <a href="#" onclick="event.preventDefault(); openLegal()">юридическими документами</a>
       </div>
@@ -1952,43 +1957,14 @@
       }
     };
     window.showCodeInputStep = function() {
-  // 1. Скрываем поле ввода телефона и кнопку "Получить код"
-  const phoneInput = document.getElementById('phoneInput');
-  const submitBtn = document.getElementById('phoneSubmit');
+  // Скрываем поле телефона и кнопку "Получить код"
+  document.getElementById('phoneInput').parentElement.style.display = 'none';
+  document.getElementById('phoneSubmit').style.display = 'none';
   
-  if (phoneInput) phoneInput.parentElement.style.display = 'none'; // скрываем обертку инпута
-  if (submitBtn) submitBtn.style.display = 'none';
-
-  // 2. Создаем блок для ввода кода, если его еще нет
-  let codeBlock = document.getElementById('codeVerifyBlock');
-  
-  if (!codeBlock) {
-    codeBlock = document.createElement('div');
-    codeBlock.id = 'codeVerifyBlock';
-    codeBlock.style.marginTop = '20px';
-    codeBlock.innerHTML = `
-      <p style="margin-bottom:10px; color:#a0d97a; font-size:14px; text-align:center;">Введите код из Telegram</p>
-      <input type="text" id="verifyCodeInput" class="phone-input" placeholder="123456" maxlength="6" style="margin-bottom:15px; text-align:center; letter-spacing:5px; font-size:20px;">
-      <button class="phone-submit" id="verifySubmitBtn" style="margin-bottom:0;">Подтвердить</button>
-    `;
-    
-    // Вставляем блок в модалку (перед юридическим текстом)
-    const phoneModal = document.querySelector('.phone-modal');
-    const legalText = document.querySelector('.phone-legal');
-    
-    if (phoneModal && legalText) {
-      phoneModal.insertBefore(codeBlock, legalText);
-    } else if (phoneModal) {
-      phoneModal.appendChild(codeBlock);
-    }
-  } else {
+  // Показываем блок для кода
+  const codeBlock = document.getElementById('codeVerifyBlock');
+  if (codeBlock) {
     codeBlock.style.display = 'block';
-  }
-
-  // 3. Привязываем функцию проверки к новой кнопке
-  const verifySubmitBtn = document.getElementById('verifySubmitBtn');
-  if (verifySubmitBtn) {
-    verifySubmitBtn.onclick = verifyCode; // Убедитесь, что функция verifyCode существует
   }
 };
     window.verifyCode = async function() {
