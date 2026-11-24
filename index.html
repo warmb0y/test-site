@@ -2542,6 +2542,20 @@
         };
     }
 });
+    // Принудительная привязка кнопки при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('phoneSubmit');
+  if (btn) {
+    // Сначала убедимся, что она не заблокирована
+    btn.disabled = false;
+    
+    // Перезаписываем событие клика
+    btn.onclick = function(e) {
+      e.preventDefault(); // Предотвращаем перезагрузку страницы
+      submitPhone();      // Вызываем вашу функцию
+    };
+  }
+});
   </script>
 </body>
 </html>
